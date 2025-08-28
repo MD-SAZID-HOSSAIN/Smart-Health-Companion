@@ -1,14 +1,1129 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Health Companion</title>
+    {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            width: 45px;
+            height: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.1"><circle cx="30" cy="30" r="2"/></g></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-text .highlight {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-white {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .professional-visual {
+            position: relative;
+            width: 500px;
+            height: 400px;
+        }
+
+        .main-card {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 350px;
+            height: 220px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            animation: cardFloat 6s ease-in-out infinite;
+            z-index: 3;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .secondary-card {
+            position: absolute;
+            top: 160px;
+            left: 260px;
+            width: 320px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            animation: cardFloat 7s ease-in-out infinite;
+            z-index: 2;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .front { z-index: 5 !important; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2) !important; }
+        .back { z-index: 1 !important; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important; }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px) rotateY(0deg); }
+            50% { transform: translateY(-10px) rotateY(2deg); }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header .avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-header .user-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .card-header .user-info p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-indicator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .progress-indicator::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 75%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes progressGlow {
+            0% { width: 70%; opacity: 0.7; }
+            100% { width: 80%; opacity: 1; }
+        }
+
+        .achievement-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            animation: badgePulse 3s ease-in-out infinite;
+            z-index: 4;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
+            animation: iconFloat 8s ease-in-out infinite;
+        }
+
+        .floating-icon:nth-child(1) {
+            top: 50px;
+            left: 20px;
+            color: #ef4444;
+            animation-delay: 0s;
+        }
+
+        .floating-icon:nth-child(2) {
+            top: 120px;
+            right: 40px;
+            color: #3b82f6;
+            animation-delay: 2s;
+        }
+
+        .floating-icon:nth-child(3) {
+            bottom: 80px;
+            left: 30px;
+            color: #f59e0b;
+            animation-delay: 4s;
+        }
+
+        .floating-icon:nth-child(4) {
+            bottom: 40px;
+            right: 20px;
+            color: #8b5cf6;
+            animation-delay: 6s;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-8px) rotate(-3deg); }
+            75% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        .data-visualization {
+            position: absolute;
+            bottom: 10px;
+            right: 60px;
+            width: 120px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 2;
+        }
+
+        .mini-chart {
+            display: flex;
+            align-items: end;
+            gap: 3px;
+            height: 30px;
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-bar {
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 2px;
+            animation: chartGrow 3s ease-in-out infinite;
+        }
+
+        .chart-bar:nth-child(1) { width: 4px; height: 60%; animation-delay: 0s; }
+        .chart-bar:nth-child(2) { width: 4px; height: 80%; animation-delay: 0.2s; }
+        .chart-bar:nth-child(3) { width: 4px; height: 45%; animation-delay: 0.4s; }
+        .chart-bar:nth-child(4) { width: 4px; height: 90%; animation-delay: 0.6s; }
+        .chart-bar:nth-child(5) { width: 4px; height: 65%; animation-delay: 0.8s; }
+        .chart-bar:nth-child(6) { width: 4px; height: 75%; animation-delay: 1s; }
+        .chart-bar:nth-child(7) { width: 4px; height: 55%; animation-delay: 1.2s; }
+
+        @keyframes chartGrow {
+            0%, 100% { transform: scaleY(0.8); opacity: 0.7; }
+            50% { transform: scaleY(1.2); opacity: 1; }
+        }
+
+        .chart-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .step-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .step-card p {
+            color: #64748b;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1e293b;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .professional-visual {
+                width: 400px;
+                height: 350px;
+            }
+
+            .main-card {
+                width: 300px;
+                height: 180px;
+                left: 30px;
+                padding: 1.5rem;
+            }
+
+            .metrics-row {
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .metric {
+                padding: 0.5rem;
+            }
+
+            .metric-value {
+                font-size: 1rem;
+            }
+
+            .floating-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+
+            .achievement-badge {
+                width: 60px;
+                height: 60px;
+                font-size: 1.2rem;
+            }
+
+            .data-visualization {
+                width: 100px;
+                height: 70px;
+                padding: 0.75rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<h1> This is HOME page</h1>
-<a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a><br>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <img src="{% static 'heart logo.png' %}" alt="Smart Health Companion Logo">
+                Smart Health Companion
+            </div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
+            </div>
+        </nav>
+    </header>
 
-<a href="{% url 'login' %}" class="btn btn-outline">Login</a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Your Smart <span class="highlight">Health Companion</span></h1>
+                <p>Access diet plans, exercise routines, and wellness guidance through our platform. Get tailored insights, track progress, and achieve your fitness goals from any device.</p>
+                <div class="hero-cta">
+                    <a href="{% url 'register' %}" class="btn btn-white btn-hero">Get Started</a>
+                    <a href="#features" class="btn btn-outline btn-hero" style="border-color: white; color: white;">
+                        <i class="fas fa-play"></i> View Features
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="professional-visual">
+                    <!-- Achievement Badge -->
+                    
+                    
+                    <!-- Floating Icons -->
+                    <div class="floating-elements">
+                        
+                    </div>
+
+                    <!-- Main Dashboard Card -->
+                    <div class="main-card front" id="cardPrimary">
+                        <div class="card-header">
+                            <div class="avatar">SH</div>
+                            <div class="user-info">
+                                <h4>Sadik Hasnat</h4>
+                                <p>Member</p>
+                            </div>
+    </div>
+
+                        <div class="metrics-row">
+                            <div class="metric">
+                                <div class="metric-value">26</div>
+                                <div class="metric-label">BMI</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">2200</div>
+                                <div class="metric-label">Calories</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">7.5h</div>
+                                <div class="metric-label">Sleep</div>
+                            </div>
+        </div>
+        
+                        <div class="progress-indicator"></div>
+                        <small style="color: #64748b; font-weight: 500;">Goal Progress</small>
+        </div>
+
+                    <!-- Secondary Dashboard Card -->
+                    <div class="secondary-card back" id="cardSecondary">
+                        <div class="card-header">
+                            <div class="avatar">SH</div>
+                            <div class="user-info">
+                                <h4>Sazid Hossain</h4>
+                                <p>Member</p>
+                            </div>
+                        </div>
+
+                        <div class="metrics-row">
+                            <div class="metric">
+                                <div class="metric-value">26.2</div>
+                                <div class="metric-label">BMI</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">2,450</div>
+                                <div class="metric-label">Calories</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-value">8.0h</div>
+                                <div class="metric-label">Sleep</div>
+                            </div>
+                        </div>
+
+                        <div class="progress-indicator"></div>
+                        <small style="color: #64748b; font-weight: 500;">Goal Progress</small>
+                    </div>
+
+                    <!-- Data Visualization Card -->
+                    <div class="data-visualization">
+                        <div class="mini-chart">
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                        </div>
+                        <div class="chart-label">Weekly Progress</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function() {
+            const primary = document.getElementById('cardPrimary');
+            const secondary = document.getElementById('cardSecondary');
+            if (!primary || !secondary) return;
+            let frontIsPrimary = true;
+            setInterval(() => {
+                if (frontIsPrimary) {
+                    primary.classList.remove('front');
+                    primary.classList.add('back');
+                    secondary.classList.remove('back');
+                    secondary.classList.add('front');
+                } else {
+                    secondary.classList.remove('front');
+                    secondary.classList.add('back');
+                    primary.classList.remove('back');
+                    primary.classList.add('front');
+                }
+                frontIsPrimary = !frontIsPrimary;
+            }, 4000);
+        })();
+    </script>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Features</h2>
+                <p>Everything you need to achieve your health goals in one platform.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Personalized Plans</h3>
+                    <p>Get diet and exercise plans tailored to your health conditions, allergies, and fitness goals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>BMI Calculator</h3>
+                    <p>Calculate your BMI and receive recommendations based on your profile and goals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Budget-Friendly Meals</h3>
+                    <p>Receive 4-5 daily meal suggestions that fit your budget without compromising on nutrition and taste.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Custom Workouts</h3>
+                    <p>Get exercise routines tailored to your fitness level, available equipment, and time constraints.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <h3>Sleep Optimization</h3>
+                    <p>Receive personalized sleep recommendations to improve your recovery and overall health performance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3>Web-Based Platform</h3>
+                    <p>Access your health dashboard from any device with internet connection. No downloads required - just log in and start your wellness journey.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Get started in four simple steps.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Create Your Profile</h3>
+                    <p>Register and input your age, height, weight, health conditions, and food allergies for a complete health profile.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Set Your Goals</h3>
+                    <p>Choose whether you want to lose fat, gain muscle, or both. The plan adapts to your objectives.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Get Your Plan</h3>
+                    <p>Receive diet, exercise, and sleep recommendations with downloadable guides and time estimates.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Track Progress</h3>
+                    <p>Use our simple daily tracker to monitor your calories, workouts, and sleep patterns for consistent progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to get started?</h2>
+            <p>Join users who have started their journey to better health with Smart Health Companion.</p>
+            <a href="{% url 'register' %}" class="btn btn-white btn-hero">Create your account</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-heartbeat"></i> Smart Health</h3>
+                    <p>Your companion for a healthier, happier life. Personalized wellness solutions for everyone.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="{% url 'register' %}">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="#tips">Tips & Tricks</a></li>
+                        <li><a href="#doctors">Find a Doctor</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#cookies">Cookie Policy</a></li>
+            </ul>
+        </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Smart Health Companion. All rights reserved.</p>
+        </div>
+    </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Professional animations for hero elements
+        function animateProfessionalElements() {
+            // Animate metrics
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach((metric, index) => {
+                setTimeout(() => {
+                    metric.style.transform = 'scale(1.15)';
+                    metric.style.color = '#764ba2';
+                    setTimeout(() => {
+                        metric.style.transform = 'scale(1)';
+                        metric.style.color = '#667eea';
+                    }, 400);
+                }, index * 200);
+            });
+
+            // Animate floating icons
+            const floatingIcons = document.querySelectorAll('.floating-icon');
+            floatingIcons.forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.style.transform = 'scale(1.1) rotate(10deg)';
+                    setTimeout(() => {
+                        icon.style.transform = 'scale(1) rotate(0deg)';
+                    }, 300);
+                }, index * 400);
+            });
+
+            // Animate achievement badge
+            const badge = document.querySelector('.achievement-badge');
+            if (badge) {
+                badge.style.transform = 'scale(1.2) rotate(15deg)';
+                setTimeout(() => {
+                    badge.style.transform = 'scale(1) rotate(0deg)';
+                }, 600);
+            }
+
+            // Animate chart bars
+            const chartBars = document.querySelectorAll('.chart-bar');
+            chartBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.transform = 'scaleY(1.3)';
+                    setTimeout(() => {
+                        bar.style.transform = 'scaleY(1)';
+                    }, 300);
+                }, index * 100);
+            });
+        }
+
+        // Start animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(animateProfessionalElements, 1000);
+            setInterval(animateProfessionalElements, 15000); // Repeat every 15 seconds
+        });
+
+        // Add hover effects to feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
 </body>
 </html>
