@@ -3,34 +3,107 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
 
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        if commit:
+            user.save()
+        return user
+
 
 class ProfileForm(forms.ModelForm):
+    GENDER_CHOICES = [
+        ('', 'Select Gender'),
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+
+    GOAL_CHOICES = [
+        ('', 'Select Goal'),
+        ('lose_weight', 'Lose Weight'),
+        ('gain_weight', 'Gain Weight'),
+        ('maintain_weight', 'Maintain Weight'),
+        ('build_muscle', 'Build Muscle'),
+        ('improve_fitness', 'Improve Fitness'),
+    ]
+
+    HEALTH_PROBLEM_CHOICES = [
+        ('diabetes', 'Diabetes'),
+        ('blood_pressure', 'Blood Pressure'),
+        ('kidney', 'Kidney Disease'),
+        ('thyroid', 'Thyroid Problems'),
+        ('asthma', 'Asthma'),
+        ('other', 'Other'),
+    ]
+
     age = forms.IntegerField(
-        required=False,
+        required=True,
         min_value=1,
         max_value=120,
         help_text="Enter your age (1-120)"
     )
     height = forms.FloatField(
-        required=False,
+        required=True,
         min_value=50.0,
         max_value=300.0,
         help_text="Enter your height in cm (50-300)"
     )
     weight = forms.FloatField(
-        required=False,
+        required=True,
         min_value=20.0,
         max_value=500.0,
-        help_text="Enter your weight in kg (20-200)"
+        help_text="Enter your weight in kg (20-500)"
+    )
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        required=True,
+        help_text="Select your gender"
+    )
+    food_allergies = forms.CharField(
+        required=False,
+        max_length=500,
+        widget=forms.Textarea(attrs={'rows': 3}),
+        help_text="List any food allergies or dietary restrictions (optional)"
+    )
+    goal = forms.ChoiceField(
+        choices=GOAL_CHOICES,
+        required=True,
+        help_text="What is your primary health goal?"
+    )
+
+    health_problems = forms.MultipleChoiceField(
+        choices=HEALTH_PROBLEM_CHOICES,
+        required=False,
+        widget=forms.CheckboxSelectMultiple(),
+        help_text="Select any health problems you have (optional)"
+    )
+
+    other_health_problems = forms.CharField(
+        required=False,
+        max_length=500,
+        widget=forms.Textarea(attrs={'rows': 2}),
+        help_text="If 'Other', please specify (optional)"
     )
 
     class Meta:
         model = Profile
-        fields = ['age', 'height', 'weight']
+        fields = ['age', 'height', 'weight', 'gender', 'food_allergies', 'goal', 'health_problems',
+                  'other_health_problems']
+
+    def clean_health_problems(self):
+        values = self.cleaned_data.get('health_problems') or []
+        return list(values)
 

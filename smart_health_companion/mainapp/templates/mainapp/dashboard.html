@@ -92,19 +92,47 @@
         <h2>Smart Health Companion</h2>
 
         <div class="welcome-section">
-            <h3>Welcome, {{ request.user.username }}!</h3>
+            <h3>Welcome, {{ request.user.first_name|default:request.user.username }}!</h3>
             <p>This is your personalized health dashboard.</p>
         </div>
+
+        {% if not request.user.profile.age or not request.user.profile.height or not request.user.profile.weight or not request.user.profile.gender or not request.user.profile.goal %}
+        <div class="profile-incomplete" style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 5px; margin-bottom: 30px; text-align: center;">
+            <h3 style="color: #856404; margin-bottom: 10px;">Complete Your Health Profile</h3>
+            <p style="color: #856404; margin-bottom: 15px;">To get personalized health recommendations, please complete your health profile.</p>
+            <a href="{% url 'complete_profile' %}" style="background-color: #667eea; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block;">Complete Profile</a>
+        </div>
+        {% endif %}
 
         <div class="stats-grid">
             <div class="stat-card">
                 <h4>Profile Status</h4>
-                <p>Complete</p>
+                {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight and request.user.profile.gender and request.user.profile.goal %}
+                    <p style="color: #27ae60;">Complete</p>
+                {% else %}
+                    <p style="color: #e74c3c;">Incomplete</p>
+                {% endif %}
             </div>
 
+            {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight %}
+            <div class="stat-card" style="background-color: #27ae60;">
+                <h4>BMI</h4>
+                <p>{{ request.user.profile.bmi|floatformat:1 }}</p>
+            </div>
+            {% endif %}
+
+            {% if request.user.profile.goal %}
+            <div class="stat-card" style="background-color: #9b59b6;">
+                <h4>Goal</h4>
+                <p>{{ request.user.profile.get_goal_display }}</p>
+            </div>
+            {% endif %}
         </div>
 
         <div class="actions">
+            {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight and request.user.profile.gender and request.user.profile.goal %}
+                <a href="{% url 'complete_profile' %}" style="background-color: #3498db; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-block; margin-right: 10px;">Update Profile</a>
+            {% endif %}
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </div>

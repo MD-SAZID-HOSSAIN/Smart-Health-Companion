@@ -200,6 +200,25 @@
             line-height: 1.6;
         }
 
+        .home-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 2px solid #667eea;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .home-btn:hover {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
         .icon-container {
             text-align: center;
             margin-bottom: 20px;
@@ -221,7 +240,7 @@
                 margin: 20px;
                 padding: 30px;
             }
-            
+
             h2 {
                 font-size: 2em;
             }
@@ -229,23 +248,23 @@
     </style>
 </head>
 <body>
-    
+
 
     <div class="container">
         <div class="icon-container">
             <img src="{% static 'smart-health-companion-logo.png' %}" alt="Smart Health Companion Logo" class="icon">
         </div>
-        
+
         <h2>Welcome Back</h2>
-        
+
         <div class="welcome-text">
             Sign in to access your personalized health dashboard
         </div>
-        
+
         {% if error %}
             <div class="error-message">{{ error }}</div>
         {% endif %}
-        
+
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
@@ -258,9 +277,10 @@
             </div>
             <button type="submit" class="submit-btn">Sign In</button>
         </form>
-        
+
         <div class="register-link">
             <p>Don't have an account? <a href="{% url 'register' %}">Create One</a></p>
+            <p style="margin-top: 10px;"><a class="home-btn" href="{% url 'home' %}">Back to Home</a></p>
         </div>
     </div>
 
