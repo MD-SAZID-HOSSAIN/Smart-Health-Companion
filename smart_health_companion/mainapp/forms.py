@@ -34,9 +34,9 @@ class ProfileForm(forms.ModelForm):
     GOAL_CHOICES = [
         ('', 'Select Goal'),
         ('lose_weight', 'Lose Weight'),
-        ('gain_weight', 'Gain Weight'),
         ('maintain_weight', 'Maintain Weight'),
-        ('build_muscle', 'Build Muscle'),
+        ('build_muscle', 'Gain Muscle'),
+        ('both', 'Gain Muscle & Lose Fat'),
         ('improve_fitness', 'Improve Fitness'),
     ]
 
@@ -51,9 +51,9 @@ class ProfileForm(forms.ModelForm):
 
     age = forms.IntegerField(
         required=True,
-        min_value=1,
-        max_value=120,
-        help_text="Enter your age (1-120)"
+        min_value=16,
+        max_value=80,
+        help_text="Enter your age (16-80)"
     )
     height = forms.FloatField(
         required=True,
@@ -106,4 +106,32 @@ class ProfileForm(forms.ModelForm):
     def clean_health_problems(self):
         values = self.cleaned_data.get('health_problems') or []
         return list(values)
+
+
+class HealthForm(forms.Form):
+    gender_choices = [
+        ("male", "Male"),
+        ("female", "Female"),
+    ]
+    activity_choices = [
+        ("sedentary", "Sedentary"),
+        ("light", "Light"),
+        ("moderate", "Moderate"),
+        ("active", "Active"),
+        ("very_active", "Very Active"),
+    ]
+    goal_choices = [
+        ("Lose Weight", "Lose Weight"),
+        ("Maintain Weight", "Maintain Weight"),
+        ("Gain Muscle", "Gain Muscle"),
+        ("Gain Muscle & Lose Fat", "Gain Muscle & Lose Fat"),
+        ("Improve Fitness", "Improve Fitness"),
+    ]
+
+    gender = forms.ChoiceField(choices=gender_choices)
+    age = forms.IntegerField(min_value=16, max_value=80)
+    height = forms.FloatField(help_text="Height in cm")
+    weight = forms.FloatField(help_text="Weight in kg")
+    activity = forms.ChoiceField(choices=activity_choices)
+    goal = forms.ChoiceField(choices=goal_choices)
 

@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-# Extend user profile
+# user profile
 class Profile(models.Model):
     GENDER_CHOICES = [
         ('M', 'Male'),
@@ -14,9 +14,9 @@ class Profile(models.Model):
 
     GOAL_CHOICES = [
         ('lose_weight', 'Lose Weight'),
-        ('gain_weight', 'Gain Weight'),
         ('maintain_weight', 'Maintain Weight'),
-        ('build_muscle', 'Build Muscle'),
+        ('build_muscle', 'Gain Muscle'),
+        ('both', 'Gain Muscle & Lose Fat'),
         ('improve_fitness', 'Improve Fitness'),
     ]
 
@@ -57,3 +57,28 @@ def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
     except Profile.DoesNotExist:
         Profile.objects.create(user=instance)
+
+
+class Tip(models.Model):
+    CATEGORY_CHOICES = [
+        ("fitness", "Fitness"),
+        ("exercise", "Exercise"),
+        ("nutrition", "Nutrition"),
+        ("recovery", "Recovery"),
+        ("lifestyle", "Lifestyle"),
+    ]
+
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="fitness")
+    summary = models.CharField(max_length=300, blank=True)
+    content = models.TextField()
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.title

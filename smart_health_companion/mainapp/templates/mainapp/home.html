@@ -18,6 +18,7 @@
             line-height: 1.6;
             color: #333;
             overflow-x: hidden;
+            padding-top: 80px; /* prevent fixed header overlap */
         }
 
         /* Header */
@@ -767,7 +768,7 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#how-it-works">How It Works</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="{% url 'tips_list' %}">Tips & Tricks</a></li>
             </ul>
             <div class="auth-buttons">
                 <a href="{% url 'login' %}" class="btn btn-outline">Login</a>

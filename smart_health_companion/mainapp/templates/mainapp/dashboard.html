@@ -89,7 +89,7 @@
         <div class="logo-container">
             <img src="{% static 'smart-health-companion-logo.png' %}" alt="Smart Health Companion Logo" class="logo">
         </div>
-        <h2>Smart Health Companion</h2>
+
 
         <div class="welcome-section">
             <h3>Welcome, {{ request.user.first_name|default:request.user.username }}!</h3>
@@ -127,6 +127,20 @@
                 <p>{{ request.user.profile.get_goal_display }}</p>
             </div>
             {% endif %}
+
+            {% if calories is not None %}
+            <div class="stat-card" style="background-color: #f39c12;">
+                <h4>Daily Calories</h4>
+                <p>{{ calories }}</p>
+            </div>
+            {% endif %}
+
+            {% if sleep_recommendation %}
+            <div class="stat-card" style="background-color: #16a085;">
+                <h4>Sleep Needed</h4>
+                <p>{{ sleep_recommendation }}</p>
+            </div>
+            {% endif %}
         </div>
 
         <div class="actions">
@@ -135,6 +149,18 @@
             {% endif %}
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
+
+        {% if calorie_message %}
+        <div style="margin-top: 20px; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+            <strong>Tip:</strong> {{ calorie_message }}
+        </div>
+        {% endif %}
+
+        {% if sleep_message %}
+        <div style="margin-top: 12px; background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);">
+            <strong>Sleep:</strong> {{ sleep_message }}
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>
