@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm, ProfileForm
-from .models import Tip
+from .models import Tip, Doctor
 
 
 def register_view(request):
@@ -163,4 +163,8 @@ def tips_list_view(request):
     return render(request, "mainapp/tips_list.html", {"tips": tips})
 
 
+
+def doctor_view(request):
+    doctors = Doctor.objects.filter(is_published=True)
+    return render(request, "mainapp/doctor.html", {"doctors": doctors})
 

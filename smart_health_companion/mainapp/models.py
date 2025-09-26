@@ -82,3 +82,21 @@ class Tip(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Doctor(models.Model):
+    name = models.CharField(max_length=120)
+    specialty = models.CharField(max_length=120)
+    email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    website = models.URLField(blank=True)
+    bio = models.TextField(blank=True)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Dr. {self.name} — {self.specialty}"
