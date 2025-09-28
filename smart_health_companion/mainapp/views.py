@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponse
+from django.conf import settings
 from .forms import RegisterForm, ProfileForm
 from .models import Tip, Doctor
+from .ai_service import WeightLossPlanAI
 
 
 def register_view(request):
@@ -138,6 +141,7 @@ def dashboard_view(request):
         "calorie_message": calorie_message,
         "sleep_recommendation": sleep_recommendation,
         "sleep_message": sleep_message,
+        "weight_loss_plan": profile.weight_loss_plan if profile else None,
     })
 
 
@@ -146,7 +150,39 @@ def complete_profile_view(request):
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user.profile)
         if form.is_valid():
-            form.save()
+            profile = form.save()
+
+            # Generate and save weight loss plan
+            try:
+                profile_data = {
+                    'age': profile.age,
+                    'height': profile.height,
+                    'weight': profile.weight,
+                    'gender': profile.gender,
+                    'goal': profile.goal,
+                    'food_allergies': profile.food_allergies or 'None',
+                    'health_problems': profile.health_problems or [],
+                    'other_health_problems': profile.other_health_problems or 'None',
+                    'bmi': profile.bmi
+                }
+
+                ai_service = WeightLossPlanAI()
+                
+                if settings.OPENAI_BASE_URL == 'http://127.0.0.1:1234/v1':
+                    try:
+                        weight_loss_plan = ai_service.generate_weight_loss_plan(profile_data)
+                    except Exception:
+                        weight_loss_plan = ai_service.get_demo_plan()
+                else:
+                    weight_loss_plan = ai_service.generate_weight_loss_plan(profile_data)
+
+                profile.weight_loss_plan = weight_loss_plan
+                profile.save()
+
+            except Exception as e:
+                # Handle exceptions during plan generation
+                print(f"Error generating weight loss plan: {e}")
+
             return redirect("dashboard")
         else:
             return render(request, "mainapp/complete_profile.html", {
@@ -167,4 +203,18 @@ def tips_list_view(request):
 def doctor_view(request):
     doctors = Doctor.objects.filter(is_published=True)
     return render(request, "mainapp/doctor.html", {"doctors": doctors})
+
+
+@login_required
+def download_plan_view(request):
+    profile = request.user.profile
+    plan_content = profile.weight_loss_plan
+
+    if not plan_content:
+        return redirect("dashboard")
+
+    response = HttpResponse(plan_content, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="weight_loss_plan.html"'
+    return response
+
 

@@ -30,6 +30,7 @@ class Profile(models.Model):
     health_problems = models.JSONField(default=list, blank=True, help_text='List of health problems/conditions')
     other_health_problems = models.TextField(max_length=500, blank=True, null=True,
                                              help_text='Specify other health problems not listed above')
+    weight_loss_plan = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"

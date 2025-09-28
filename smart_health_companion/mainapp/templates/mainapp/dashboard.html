@@ -309,6 +309,57 @@
         .progress-circle::before { content: ''; width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; }
         .progress-text { position: absolute; font-size: 0.8rem; font-weight: bold; color: #667eea; }
 
+        /* Weight Loss Plan Styles */
+        .weight-loss-plan-section {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .plan-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plan-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .plan-content {
+            padding: 2rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
             .main-content { padding: 1rem; }
             .welcome-banner { padding: 2rem 1.5rem; }
@@ -419,8 +470,22 @@
             <h3>Quick Actions</h3>
             <div class="action-buttons">
                 <a href="{% url 'complete_profile' %}" class="btn btn-primary">Update Profile</a>
+                
             </div>
         </div>
+
+        <!-- AI Weight Loss Plan Section -->
+        {% if weight_loss_plan %}
+        <div id="weightLossPlanSection" class="weight-loss-plan-section">
+            <div class="plan-header">
+                <h3>Your Personalized Weight Loss Plan</h3>
+                <a href="{% url 'download_plan' %}" class="btn btn-primary">Download Plan</a>
+            </div>
+            <div id="planContent" class="plan-content">
+                {{ weight_loss_plan|safe }}
+            </div>
+        </div>
+        {% endif %}
 
         <div class="tips-section">
             {% if calorie_message %}
@@ -438,6 +503,7 @@
             {% endif %}
         </div>
     </main>
+
 
     
 </body>

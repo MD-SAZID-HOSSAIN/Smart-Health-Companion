@@ -123,3 +123,8 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = []
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = 'Lax'
+
+# OpenAI Configuration
+OPENAI_API_KEY = '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'
+OPENAI_BASE_URL = 'https://openrouter.ai/api/v1'
+OPENAI_MODEL = 'x-ai/grok-4-fast:free'  # Model to use (adjust based on your local server)

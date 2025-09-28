@@ -10,5 +10,7 @@ urlpatterns = [
     path("complete-profile/", views.complete_profile_view, name="complete_profile"),
     path("tips/", views.tips_list_view, name="tips_list"),
     path("doctors/", views.doctor_view, name="doctor"),
+    path("download-plan/", views.download_plan_view, name="download_plan"),
+    
 ]
 
