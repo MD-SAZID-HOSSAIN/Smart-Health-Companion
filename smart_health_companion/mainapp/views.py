@@ -14,6 +14,8 @@ def register_view(request):
         if form.is_valid():
             try:
                 user = form.save()
+                # Add success message to session for display on login page
+                request.session['registration_success'] = f"Your account has been successfully created for {user.username}. Please log in to continue."
                 return redirect("login")
             except Exception as e:
                 return render(request, "mainapp/register.html", {
@@ -34,12 +36,20 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect("dashboard")
 
+    # Check for registration success message
+    success_message = None
+    if 'registration_success' in request.session:
+        success_message = request.session.pop('registration_success')
+
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
         if not username or not password:
-            return render(request, "mainapp/login.html", {"error": "Please provide both username and password."})
+            return render(request, "mainapp/login.html", {
+                "error": "Please provide both username and password.",
+                "success_message": success_message
+            })
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
@@ -47,11 +57,17 @@ def login_view(request):
                 login(request, user)
                 return redirect("dashboard")
             else:
-                return render(request, "mainapp/login.html",
-                              {"error": "Your account is disabled. Please contact support."})
+                return render(request, "mainapp/login.html", {
+                    "error": "Your account is disabled. Please contact support.",
+                    "success_message": success_message
+                })
         else:
-            return render(request, "mainapp/login.html", {"error": "Invalid username or password."})
-    return render(request, "mainapp/login.html")
+            return render(request, "mainapp/login.html", {
+                "error": "Invalid username or password.",
+                "success_message": success_message
+            })
+    
+    return render(request, "mainapp/login.html", {"success_message": success_message})
 
 
 def logout_view(request):
@@ -147,8 +163,15 @@ def dashboard_view(request):
 
 @login_required
 def complete_profile_view(request):
+    # Ensure profile exists
+    profile, created = request.user.profile, False
+    if not hasattr(request.user, 'profile'):
+        from .models import Profile
+        profile = Profile.objects.create(user=request.user)
+        created = True
+    
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=request.user.profile)
+        form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             profile = form.save()
 
@@ -190,7 +213,7 @@ def complete_profile_view(request):
                 "errors": "Please correct the errors below."
             })
     else:
-        form = ProfileForm(instance=request.user.profile)
+        form = ProfileForm(instance=profile)
     return render(request, "mainapp/complete_profile.html", {"form": form})
 
 
@@ -207,7 +230,11 @@ def doctor_view(request):
 
 @login_required
 def download_plan_view(request):
-    profile = request.user.profile
+    try:
+        profile = request.user.profile
+    except:
+        return redirect("dashboard")
+    
     plan_content = profile.weight_loss_plan
 
     if not plan_content:

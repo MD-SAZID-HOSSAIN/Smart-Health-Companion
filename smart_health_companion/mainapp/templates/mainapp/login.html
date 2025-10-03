@@ -261,6 +261,12 @@
             Sign in to access your personalized health advice
         </div>
 
+        {% if success_message %}
+            <div style="background: linear-gradient(45deg, #2ecc71, #27ae60); color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; font-weight: 500; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);">
+                {{ success_message }}
+            </div>
+        {% endif %}
+
         {% if error %}
             <div class="error-message">{{ error }}</div>
         {% endif %}
