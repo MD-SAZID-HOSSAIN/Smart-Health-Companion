@@ -57,6 +57,7 @@
         /* Tip cards */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
         .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; border: 1px solid #e5e7eb; }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
         .badge { display: inline-block; padding: 4px 10px; font-size: 12px; border-radius: 999px; background: #eef2ff; color: #3730a3; margin-bottom: 10px; font-weight: 600; }
         .title { font-size: 1.2rem; margin: 0 0 8px; color: #1e293b; }
@@ -100,6 +101,9 @@
             <div class="grid">
                 {% for tip in tips %}
                     <div class="card">
+                        {% if tip.image %}
+                            <img src="{{ tip.image.url }}" alt="{{ tip.title }}">
+                        {% endif %}
                         <span class="badge">{{ tip.get_category_display }}</span>
                         <h2 class="title">{{ tip.title }}</h2>
                         {% if tip.summary %}

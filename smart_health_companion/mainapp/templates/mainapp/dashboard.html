@@ -49,6 +49,11 @@
             gap: 0.5rem;
         }
 
+        .logo img {
+            width: 45px;
+            height: auto;
+        }
+
         .user-menu {
             display: flex;
             align-items: center;
@@ -56,16 +61,17 @@
         }
 
         .user-avatar {
-            width: 40px;
+            min-width: 40px;
             height: 40px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
+            border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
             font-size: 0.9rem;
+            padding: 0 12px;
         }
 
         .btn {
@@ -79,6 +85,11 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.9rem;
         }
 
         .btn-outline {
@@ -375,12 +386,12 @@
 <body>
     <header class="header">
         <nav class="nav">
-            <div class="logo">Smart Health Companion</div>
+            <div class="logo"><img src="{% static 'heart logo.png' %}" alt="Smart Health Companion Logo">Smart Health Companion</div>
             <div class="user-menu">
                 <div class="user-avatar">
-                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                    {{ request.user.first_name|default:request.user.username }}
                 </div>
-                <a href="{% url 'logout' %}" class="btn btn-outline">Logout</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
             </div>
         </nav>
     </header>
