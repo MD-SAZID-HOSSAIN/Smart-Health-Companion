@@ -3,7 +3,7 @@ from django.conf import settings
 from typing import Dict, Any, Optional
 
 
-class WeightLossPlanAI:
+class AIPlan:
     """
     AI Agent for generating personalized weight loss plans using OpenAI API
     """
@@ -15,15 +15,15 @@ class WeightLossPlanAI:
             base_url=settings.OPENAI_BASE_URL
         )
     
-    def generate_weight_loss_plan(self, profile_data: Dict[str, Any]) -> str:
+    def generate_plan(self, profile_data: Dict[str, Any]) -> str:
         """
-        Generate a personalized weight loss plan based on user profile data
+        Generate a personalized plan based on user profile data and target goal
         
         Args:
             profile_data: Dictionary containing user profile information
             
         Returns:
-            HTML formatted weight loss plan
+            HTML formatted plan
         """
         try:
             # Prepare the prompt with user data
@@ -54,7 +54,7 @@ class WeightLossPlanAI:
             return f"""
             <div style="padding: 20px; background-color: #fee; border: 1px solid #fcc; border-radius: 8px; color: #c33;">
                 <h3>Error Generating Plan</h3>
-                <p>Unable to generate weight loss plan at this time. Please check your local OpenAI server configuration.</p>
+                <p>Unable to generate plan at this time. Please check your local OpenAI server configuration.</p>
                 <p><strong>Server URL:</strong> {settings.OPENAI_BASE_URL}</p>
                 <p><strong>Model:</strong> {settings.OPENAI_MODEL}</p>
                 <p><strong>Error:</strong> {str(e)}</p>
@@ -136,48 +136,3 @@ class WeightLossPlanAI:
         
         return prompt
     
-    def get_demo_plan(self) -> str:
-        """
-        Return a demo weight loss plan when API is not available
-        """
-        return """
-        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-            <h2 style="color: #2c3e50; text-align: center; margin-bottom: 30px;">🎯 Personalized Weight Loss Plan</h2>
-            
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-                <h3 style="margin: 0;">📋 Your 4-Week Weight Loss Journey</h3>
-                <p style="margin: 10px 0 0 0; opacity: 0.9;">A comprehensive plan tailored to your profile and goals</p>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #28a745;">
-                    <h4 style="color: #28a745; margin-top: 0;">🥗 Nutrition Guidelines</h4>
-                    <ul style="color: #495057;">
-                        <li>Calorie deficit: 500-750 calories per day</li>
-                        <li>Protein: 1.2-1.6g per kg body weight</li>
-                        <li>Hydration: 8-10 glasses of water daily</li>
-                        <li>Limit processed foods and added sugars</li>
-                    </ul>
-                </div>
-
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-left: 4px solid #007bff;">
-                    <h4 style="color: #007bff; margin-top: 0;">🏃‍♀️ Exercise Plan</h4>
-                    <ul style="color: #495057;">
-                        <li>Cardio: 150 minutes moderate intensity weekly</li>
-                        <li>Strength training: 2-3 sessions per week</li>
-                        <li>Daily walking: 10,000 steps minimum</li>
-                        <li>Include flexibility and mobility work</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; border: 1px solid #ffeaa7; margin-bottom: 30px;">
-                <h4 style="color: #856404; margin-top: 0;">⚠️ Important Disclaimer</h4>
-                <p style="color: #856404; margin: 0;">This is a demo plan. For personalized recommendations, please configure your OpenAI API key and consult with healthcare professionals before starting any weight loss program.</p>
-            </div>
-
-            <div style="text-align: center; margin-top: 30px;">
-                <p style="color: #6c757d; font-style: italic;">Start your local OpenAI server at http://127.0.0.1:1234 to get personalized AI-generated plans!</p>
-            </div>
-        </div>
-        """

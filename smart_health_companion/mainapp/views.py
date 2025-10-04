@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from .forms import RegisterForm, ProfileForm
 from .models import Tip, Doctor
-from .ai_service import WeightLossPlanAI
+from .ai_service import AIPlan
 
 
 def register_view(request):
@@ -14,7 +14,7 @@ def register_view(request):
         if form.is_valid():
             try:
                 user = form.save()
-                # Add success message to session for display on login page
+                # success message to session for display on login page
                 request.session['registration_success'] = f"Your account has been successfully created for {user.username}. Please log in to continue."
                 return redirect("login")
             except Exception as e:
@@ -189,15 +189,8 @@ def complete_profile_view(request):
                     'bmi': profile.bmi
                 }
 
-                ai_service = WeightLossPlanAI()
-                
-                if settings.OPENAI_BASE_URL == 'http://127.0.0.1:1234/v1':
-                    try:
-                        weight_loss_plan = ai_service.generate_weight_loss_plan(profile_data)
-                    except Exception:
-                        weight_loss_plan = ai_service.get_demo_plan()
-                else:
-                    weight_loss_plan = ai_service.generate_weight_loss_plan(profile_data)
+                ai_service = AIPlan()
+                weight_loss_plan = ai_service.generate_plan(profile_data)
 
                 profile.weight_loss_plan = weight_loss_plan
                 profile.save()
