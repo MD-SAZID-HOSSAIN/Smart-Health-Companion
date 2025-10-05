@@ -20,13 +20,30 @@ class Profile(models.Model):
         ('improve_fitness', 'Improve Fitness'),
     ]
 
+    EXERCISE_PLACE_CHOICES = [
+        ('gym', 'Gym'),
+        ('home', 'Home'),
+        ('outdoor', 'Outdoor'),
+    ]
+
+    ACTIVITY_LEVEL_CHOICES = [
+        ('sedentary', 'Sedentary – little or no exercise'),
+        ('lightly_active', 'Lightly Active – light exercise 1–3 days/week'),
+        ('moderately_active', 'Moderately Active – moderate exercise 3–5 days/week'),
+        ('very_active', 'Very Active – hard exercise 6–7 days/week'),
+        ('extra_active', 'Extra Active – intense training or physical job'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     age = models.IntegerField(null=True, blank=True)
     height = models.FloatField(null=True, blank=True)
-    weight = models.FloatField(null=True, blank=True)
+    current_weight = models.FloatField(null=True, blank=True, help_text='Current weight in kg')
+    target_weight = models.FloatField(null=True, blank=True, help_text='Target weight in kg')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
     food_allergies = models.TextField(max_length=500, blank=True, null=True)
     goal = models.CharField(max_length=20, choices=GOAL_CHOICES, null=True, blank=True)
+    exercise_place = models.CharField(max_length=10, choices=EXERCISE_PLACE_CHOICES, null=True, blank=True, help_text='Preferred exercise location')
+    activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES, null=True, blank=True, help_text='Your current activity level')
     health_problems = models.JSONField(default=list, blank=True, help_text='List of health problems/conditions')
     other_health_problems = models.TextField(max_length=500, blank=True, null=True,
                                              help_text='Specify other health problems not listed above')
@@ -37,11 +54,11 @@ class Profile(models.Model):
 
     @property
     def bmi(self):
-        """Calculate BMI if height and weight are available"""
-        if self.height and self.weight and self.height > 0:
+        """Calculate BMI if height and current_weight are available"""
+        if self.height and self.current_weight and self.height > 0:
             # Convert height from cm to meters
             height_m = self.height / 100
-            return self.weight / (height_m ** 2)
+            return self.current_weight / (height_m ** 2)
         return None
 
 

@@ -129,9 +129,10 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 # OpenAI Configuration
-OPENAI_API_KEY = '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'
-OPENAI_BASE_URL = 'https://openrouter.ai/api/v1'
-OPENAI_MODEL = 'openai/gpt-oss-20b:free'
+import os
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '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')
+OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL', 'https://openrouter.ai/api/v1')
+OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'openai/gpt-oss-20b:free')
 
 # Media 
 MEDIA_URL = 'media/'

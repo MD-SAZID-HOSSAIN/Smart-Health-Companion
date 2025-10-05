@@ -40,6 +40,22 @@ class ProfileForm(forms.ModelForm):
         ('improve_fitness', 'Improve Fitness'),
     ]
 
+    EXERCISE_PLACE_CHOICES = [
+        ('', 'Select Exercise Place'),
+        ('gym', 'Gym'),
+        ('home', 'Home'),
+        ('outdoor', 'Outdoor'),
+    ]
+
+    ACTIVITY_LEVEL_CHOICES = [
+        ('', 'Select Activity Level'),
+        ('sedentary', 'Sedentary – little or no exercise'),
+        ('lightly_active', 'Lightly Active – light exercise 1–3 days/week'),
+        ('moderately_active', 'Moderately Active – moderate exercise 3–5 days/week'),
+        ('very_active', 'Very Active – hard exercise 6–7 days/week'),
+        ('extra_active', 'Extra Active – intense training or physical job'),
+    ]
+
     HEALTH_PROBLEM_CHOICES = [
         ('diabetes', 'Diabetes'),
         ('blood_pressure', 'Blood Pressure'),
@@ -61,11 +77,17 @@ class ProfileForm(forms.ModelForm):
         max_value=300.0,
         help_text="Enter your height in cm (50-300)"
     )
-    weight = forms.FloatField(
+    current_weight = forms.FloatField(
         required=True,
         min_value=20.0,
         max_value=500.0,
-        help_text="Enter your weight in kg (20-500)"
+        help_text="Enter your current weight in kg (20-500)"
+    )
+    target_weight = forms.FloatField(
+        required=False,
+        min_value=20.0,
+        max_value=500.0,
+        help_text="Enter your target weight in kg (20-500) - Optional"
     )
     gender = forms.ChoiceField(
         choices=GENDER_CHOICES,
@@ -82,6 +104,16 @@ class ProfileForm(forms.ModelForm):
         choices=GOAL_CHOICES,
         required=True,
         help_text="What is your primary health goal?"
+    )
+    exercise_place = forms.ChoiceField(
+        choices=EXERCISE_PLACE_CHOICES,
+        required=False,
+        help_text="Where do you prefer to exercise? (Optional)"
+    )
+    activity_level = forms.ChoiceField(
+        choices=ACTIVITY_LEVEL_CHOICES,
+        required=False,
+        help_text="What is your current activity level? (Optional)"
     )
 
     health_problems = forms.MultipleChoiceField(
@@ -100,7 +132,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields = ['age', 'height', 'weight', 'gender', 'food_allergies', 'goal', 'health_problems',
+        fields = ['age', 'height', 'current_weight', 'target_weight', 'gender', 'food_allergies', 'goal', 'exercise_place', 'activity_level', 'health_problems',
                   'other_health_problems']
 
     def clean_health_problems(self):

@@ -404,7 +404,7 @@
             </div>
         </div>
 
-        {% if not request.user.profile.age or not request.user.profile.height or not request.user.profile.weight or not request.user.profile.gender or not request.user.profile.goal %}
+        {% if not request.user.profile.age or not request.user.profile.height or not request.user.profile.current_weight or not request.user.profile.gender or not request.user.profile.goal %}
         <div class="profile-alert">
             <h3>Complete Your Health Profile</h3>
             <p>To get personalized health recommendations, please complete your health profile.</p>
@@ -413,11 +413,11 @@
         {% endif %}
 
         <div class="stats-grid">
-            <div class="stat-card {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight and request.user.profile.gender and request.user.profile.goal %}complete{% else %}incomplete{% endif %}">
+            <div class="stat-card {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}complete{% else %}incomplete{% endif %}">
                 <div class="stat-header">
                     <div>
                         <h4>Profile Status</h4>
-                        {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight and request.user.profile.gender and request.user.profile.goal %}
+                        {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}
                             <div class="stat-value">Complete</div>
                             <div class="stat-label">All key details provided</div>
                         {% else %}
@@ -428,7 +428,7 @@
                 </div>
             </div>
 
-            {% if request.user.profile.age and request.user.profile.height and request.user.profile.weight %}
+            {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight %}
             <div class="stat-card bmi">
                 <div class="stat-header">
                     <div>
@@ -514,8 +514,5 @@
             {% endif %}
         </div>
     </main>
-
-
-    
 </body>
 </html>

@@ -15,7 +15,8 @@ def register_view(request):
             try:
                 user = form.save()
                 # success message to session for display on login page
-                request.session['registration_success'] = f"Your account has been successfully created for {user.username}. Please log in to continue."
+                request.session[
+                    'registration_success'] = f"Your account has been successfully created for {user.username}. Please log in to continue."
                 return redirect("login")
             except Exception as e:
                 return render(request, "mainapp/register.html", {
@@ -66,7 +67,7 @@ def login_view(request):
                 "error": "Invalid username or password.",
                 "success_message": success_message
             })
-    
+
     return render(request, "mainapp/login.html", {"success_message": success_message})
 
 
@@ -88,10 +89,10 @@ def dashboard_view(request):
     sleep_message = ""
 
     profile = getattr(request.user, "profile", None)
-    if profile and profile.age and profile.height and profile.weight and profile.gender:
+    if profile and profile.age and profile.height and profile.current_weight and profile.gender:
 
         height_cm = profile.height
-        weight_kg = profile.weight
+        weight_kg = profile.current_weight
         age_years = profile.age
 
         # Map gender char to string for BMR
@@ -169,7 +170,7 @@ def complete_profile_view(request):
         from .models import Profile
         profile = Profile.objects.create(user=request.user)
         created = True
-    
+
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
@@ -180,9 +181,12 @@ def complete_profile_view(request):
                 profile_data = {
                     'age': profile.age,
                     'height': profile.height,
-                    'weight': profile.weight,
+                    'current_weight': profile.current_weight,
+                    'target_weight': profile.target_weight,
                     'gender': profile.gender,
                     'goal': profile.goal,
+                    'exercise_place': profile.exercise_place,
+                    'activity_level': profile.activity_level,
                     'food_allergies': profile.food_allergies or 'None',
                     'health_problems': profile.health_problems or [],
                     'other_health_problems': profile.other_health_problems or 'None',
@@ -215,7 +219,6 @@ def tips_list_view(request):
     return render(request, "mainapp/tips_list.html", {"tips": tips})
 
 
-
 def doctor_view(request):
     doctors = Doctor.objects.filter(is_published=True)
     return render(request, "mainapp/doctor.html", {"doctors": doctors})
@@ -227,7 +230,7 @@ def download_plan_view(request):
         profile = request.user.profile
     except:
         return redirect("dashboard")
-    
+
     plan_content = profile.weight_loss_plan
 
     if not plan_content:

@@ -317,19 +317,66 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="{{ form.weight.id_for_label }}">{{ form.weight.label }} (kg)</label>
-                    {{ form.weight }}
-                    {% if form.weight.errors %}
+                    <label for="{{ form.current_weight.id_for_label }}">{{ form.current_weight.label }} (kg)</label>
+                    {{ form.current_weight }}
+                    {% if form.current_weight.errors %}
                         <ul class="errorlist">
-                            {% for error in form.weight.errors %}
+                            {% for error in form.current_weight.errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    {% if form.weight.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.weight.help_text }}</small>
+                    {% if form.current_weight.help_text %}
+                        <small style="color: #7f8c8d; font-style: italic;">{{ form.current_weight.help_text }}</small>
                     {% endif %}
                 </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.target_weight.id_for_label }}">{{ form.target_weight.label }} (kg)</label>
+                    {{ form.target_weight }}
+                    {% if form.target_weight.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.target_weight.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if form.target_weight.help_text %}
+                        <small style="color: #7f8c8d; font-style: italic;">{{ form.target_weight.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.exercise_place.id_for_label }}">{{ form.exercise_place.label }}</label>
+                    {{ form.exercise_place }}
+                    {% if form.exercise_place.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.exercise_place.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if form.exercise_place.help_text %}
+                        <small style="color: #7f8c8d; font-style: italic;">{{ form.exercise_place.help_text }}</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.activity_level.id_for_label }}">{{ form.activity_level.label }}</label>
+                {{ form.activity_level }}
+                {% if form.activity_level.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.activity_level.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if form.activity_level.help_text %}
+                    <small style="color: #7f8c8d; font-style: italic;">{{ form.activity_level.help_text }}</small>
+                {% endif %}
             </div>
 
             <div class="form-group">
