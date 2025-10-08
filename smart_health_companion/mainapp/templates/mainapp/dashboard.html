@@ -380,6 +380,83 @@
             .btn { width: 100%; max-width: 300px; justify-content: center; }
             .tips-section { grid-template-columns: 1fr; gap: 1rem; }
         }
+
+        /* Professional form + table styles */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.08);
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+        }
+        .muted { color: #64748b; font-size: .95rem; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        @media (max-width: 900px) {
+            .form-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 520px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        .field { text-align: left; }
+        .label { font-size: .85rem; color: #475569; margin-bottom: .35rem; display: block; }
+        .control input[type="date"],
+        .control input[type="number"],
+        .control input[type="text"],
+        .control select {
+            width: 100%;
+            padding: .7rem .85rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f172a;
+            outline: none;
+            transition: box-shadow .2s ease, border-color .2s ease;
+        }
+        .control input:focus, .control select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102,126,234,.15);
+        }
+        .actions { margin-top: .5rem; }
+        .btn-submit { padding: .8rem 1.2rem; }
+
+        .table-wrap { overflow-x: auto; }
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,.06);
+        }
+        .table thead th {
+            background: #f8fafc;
+            color: #475569;
+            text-align: left;
+            padding: .9rem .9rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+        .table tbody td {
+            padding: .9rem .9rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+        }
+        .table tbody tr:hover { background: #f8fafc; }
     </style>
     
 </head>
@@ -391,6 +468,7 @@
                 <div class="user-avatar">
                     {{ request.user.first_name|default:request.user.username }}
                 </div>
+                <a href="{% url 'complete_profile' %}" class="btn btn-primary btn-sm">Update Profile</a>
                 <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">Logout</a>
             </div>
         </nav>
@@ -477,13 +555,44 @@
             {% endif %}
         </div>
 
-        <div class="actions-section">
-            <h3>Quick Actions</h3>
-            <div class="action-buttons">
-                <a href="{% url 'complete_profile' %}" class="btn btn-primary">Update Profile</a>
-                
+        
+
+        <div class="card">
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Daily Tracking</span>
+                <a href="{% url 'logs' %}" class="btn btn-primary btn-sm">View Logs</a>
             </div>
+            <p class="muted" style="margin-bottom:1rem;">Log your calories, sleep, and exercise for any day.</p>
+            <form method="post" action="{% url 'dashboard' %}">
+                {% csrf_token %}
+                {{ log_form.non_field_errors }}
+                <div class="form-grid">
+                    <div class="field">
+                        <label class="label">{{ log_form.date.label }}</label>
+                        <div class="control">{{ log_form.date }}</div>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ log_form.calories.label }}</label>
+                        <div class="control">{{ log_form.calories }}</div>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ log_form.sleep_hours.label }}</label>
+                        <div class="control">{{ log_form.sleep_hours }}</div>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{ log_form.exercise_minutes.label }}</label>
+                        <div class="control">{{ log_form.exercise_minutes }}</div>
+                    </div>
+                </div>
+                <div class="actions" style="text-align:right;">
+                    <button type="submit" class="btn btn-primary btn-submit">Save Log</button>
+                </div>
+            </form>
         </div>
+
+        {% if recent_logs %}
+        
+        {% endif %}
 
         <!-- AI Weight Loss Plan Section -->
         {% if weight_loss_plan %}

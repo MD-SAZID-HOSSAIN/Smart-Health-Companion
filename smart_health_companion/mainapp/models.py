@@ -48,6 +48,7 @@ class Profile(models.Model):
     other_health_problems = models.TextField(max_length=500, blank=True, null=True,
                                              help_text='Specify other health problems not listed above')
     weight_loss_plan = models.TextField(blank=True, null=True)
+    start_tracking_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
@@ -120,3 +121,17 @@ class Doctor(models.Model):
 
     def __str__(self):
         return f"Dr. {self.name} — {self.specialty}"
+
+class DailyLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_logs')
+    date = models.DateField()
+    calories = models.IntegerField(default=0)
+    sleep_hours = models.DecimalField(max_digits=4, decimal_places=1, default=0)
+    exercise_minutes = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-date']
+        unique_together = ('user', 'date')
+
+    def __str__(self):
+        return f"{self.user.username} — {self.date}: {self.calories} kcal, {self.sleep_hours}h, {self.exercise_minutes} min"

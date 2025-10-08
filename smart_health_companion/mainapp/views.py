@@ -3,8 +3,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
-from .forms import RegisterForm, ProfileForm
-from .models import Tip, Doctor
+from .forms import RegisterForm, ProfileForm, DailyLogForm
+from .models import Tip, Doctor, DailyLog
+from django.core.paginator import Paginator
+import calendar
+from datetime import date as dt_date
 from .ai_service import AIPlan
 
 
@@ -88,6 +91,37 @@ def dashboard_view(request):
     sleep_recommendation = ""
     sleep_message = ""
 
+    # Handle DailyLog submission
+    if request.method == 'POST':
+        log_form = DailyLogForm(request.POST)
+        if log_form.is_valid():
+            date = log_form.cleaned_data['date']
+            calories_val = log_form.cleaned_data['calories']
+            sleep_hours = log_form.cleaned_data['sleep_hours']
+            exercise_minutes = log_form.cleaned_data['exercise_minutes']
+
+            # Create or update the log for this user and date
+            DailyLog.objects.update_or_create(
+                user=request.user,
+                date=date,
+                defaults={
+                    'calories': calories_val,
+                    'sleep_hours': sleep_hours,
+                    'exercise_minutes': exercise_minutes,
+                }
+            )
+            # Set start tracking date on first submission
+            try:
+                profile = request.user.profile
+                if not profile.start_tracking_date:
+                    profile.start_tracking_date = date
+                    profile.save(update_fields=["start_tracking_date"])
+            except Exception:
+                pass
+            return redirect('dashboard')
+    else:
+        log_form = DailyLogForm()
+
     profile = getattr(request.user, "profile", None)
     if profile and profile.age and profile.height and profile.current_weight and profile.gender:
 
@@ -130,9 +164,9 @@ def dashboard_view(request):
 
         # Sleep based on age
         if 16 <= age_years <= 18:
-            base_sleep = "8–10 hours/night"
+            base_sleep = "8 hours/night"
         elif 19 <= age_years <= 64:
-            base_sleep = "7–9 hours/night"
+            base_sleep = "7 hours/night"
         elif 65 <= age_years <= 80:
             base_sleep = "7–8 hours/night"
         else:
@@ -148,7 +182,7 @@ def dashboard_view(request):
         elif goal == 'maintain_weight':
             goal_note = "Keep a steady schedule in the mid-range."
         elif goal == 'improve_fitness':
-            goal_note = "7–9h supports training adaptation and recovery."
+            goal_note = "7–8h supports training adaptation and recovery."
 
         sleep_recommendation = base_sleep
         sleep_message = goal_note
@@ -159,6 +193,7 @@ def dashboard_view(request):
         "sleep_recommendation": sleep_recommendation,
         "sleep_message": sleep_message,
         "weight_loss_plan": profile.weight_loss_plan if profile else None,
+        "log_form": log_form,
     })
 
 
@@ -240,4 +275,41 @@ def download_plan_view(request):
     response['Content-Disposition'] = 'attachment; filename="weight_loss_plan.html"'
     return response
 
+
+@login_required
+def logs_view(request):
+    logs_qs = DailyLog.objects.filter(user=request.user).order_by('-date')
+    paginator = Paginator(logs_qs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    #  month calendar highlighting the start tracking date
+    profile = getattr(request.user, 'profile', None)
+    start_date = getattr(profile, 'start_tracking_date', None) if profile else None
+    base_date = start_date or dt_date.today()
+
+    cal = calendar.Calendar(firstweekday=6)  # 6 = Sunday
+    month_days = cal.monthdayscalendar(base_date.year, base_date.month)
+    #  for start date
+    month_weeks = []
+    for week in month_days:
+        week_cells = []
+        for day in week:
+            cell = {
+                'num': day,
+                'is_blank': day == 0,
+                'is_start': bool(start_date and day == start_date.day and base_date.month == start_date.month and base_date.year == start_date.year)
+            }
+            week_cells.append(cell)
+        month_weeks.append(week_cells)
+
+    month_name = calendar.month_name[base_date.month]
+
+    return render(request, "mainapp/logs.html", {
+        "page_obj": page_obj,
+        "total_count": logs_qs.count(),
+        "calendar_weeks": month_weeks,
+        "calendar_month_name": month_name,
+        "calendar_year": base_date.year,
+    })
 

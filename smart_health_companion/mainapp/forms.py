@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile
+from .models import Profile, DailyLog
 
 
 class RegisterForm(UserCreationForm):
@@ -166,4 +166,15 @@ class HealthForm(forms.Form):
     weight = forms.FloatField(help_text="Weight in kg")
     activity = forms.ChoiceField(choices=activity_choices)
     goal = forms.ChoiceField(choices=goal_choices)
+
+
+class DailyLogForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    calories = forms.IntegerField(min_value=0)
+    sleep_hours = forms.DecimalField(min_value=0, max_digits=4, decimal_places=1)
+    exercise_minutes = forms.IntegerField(min_value=0)
+
+    class Meta:
+        model = DailyLog
+        fields = ['date', 'calories', 'sleep_hours', 'exercise_minutes']
 
