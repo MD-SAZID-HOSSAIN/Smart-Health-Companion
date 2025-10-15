@@ -140,6 +140,32 @@ class AIPlan:
             'extra_active': 'Extra Active – intense training or physical job'
         }.get(activity_level, activity_level)
 
+        # Optional daily log context
+        daily_log: Optional[Dict[str, Any]] = profile_data.get('daily_log')
+        log_text = ""
+        if daily_log:
+            # Build a concise deviation-aware snippet
+            calories_str = f"{daily_log.get('calories')} kcal"
+            rec_cal = daily_log.get('recommended_calories')
+            if rec_cal is not None:
+                calories_str += f" (recommended: {rec_cal} kcal)"
+
+            sleep_str = f"{daily_log.get('sleep_hours')} hours"
+            rec_sleep = daily_log.get('recommended_sleep')
+            if rec_sleep is not None:
+                sleep_str += f" (recommended: {rec_sleep} hours)"
+
+            exercise_str = f"{daily_log.get('exercise_minutes')} minutes"
+
+            log_text = f"""
+            \nRecent daily log (date: {daily_log.get('date', 'latest')}):
+            - Calories consumed: {calories_str}
+            - Sleep: {sleep_str}
+            - Exercise: {exercise_str}
+
+            If there is a deviation from recommended values, adjust the plan for the next 1–2 weeks to gently guide the user back on track, keeping safety and sustainability as top priorities. Provide concrete, actionable adjustments to meals, portions, and training volume/intensity.
+            """
+
         prompt = f"""
         Create a comprehensive, personalized weight loss plan for the following user profile:
 
@@ -178,6 +204,8 @@ class AIPlan:
         Please format the response as HTML with CSS styling for better presentation. Use appropriate headings, lists, and styling to make it visually appealing and easy to read.
         Make sure all the styles are inline, so that they don't interfere with the styling of the page this will be embedded in.
         NOTE: ALL STYLES SHOULD BE INLINE.
+
+        {log_text}
         """
 
         return prompt

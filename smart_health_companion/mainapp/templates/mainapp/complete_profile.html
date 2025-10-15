@@ -128,6 +128,48 @@
             transform: translateY(-1px);
         }
 
+        /* Health Problems Checkbox Styling */
+        .form-group ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .form-group li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group li:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .form-group input[type="checkbox"]:checked + label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .form-group li:has(input[type="checkbox"]:checked) {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+        }
+
         .errorlist {
             color: #e74c3c;
             font-size: 13px;

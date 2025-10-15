@@ -11,6 +11,66 @@ from datetime import date as dt_date
 from .ai_service import AIPlan
 
 
+def calculate_calorie_target(profile):
+    """Calculate recommended daily calories based on profile data"""
+    if not (profile and profile.age and profile.height and profile.current_weight and profile.gender):
+        return None, None
+    
+    # BMR calculation
+    height_cm = profile.height
+    weight_kg = profile.current_weight
+    age_years = profile.age
+    is_male = profile.gender == 'M'
+    
+    if is_male:
+        bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age_years + 5
+    else:
+        bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age_years - 161
+    
+    # Activity level multipliers
+    activity_factors = {
+        'sedentary': 1.2,
+        'lightly_active': 1.375,
+        'moderately_active': 1.55,
+        'very_active': 1.725,
+        'extra_active': 1.9
+    }
+    activity_level = profile.activity_level or 'moderately_active'
+    activity_factor = activity_factors.get(activity_level, 1.55)
+    tdee = bmr * activity_factor
+    
+    # Goal-based calorie adjustment
+    goal = profile.goal or ''
+    if goal == 'lose_weight':
+        calories = tdee - 500
+    elif goal == 'maintain_weight':
+        calories = tdee
+    elif goal == 'build_muscle':
+        calories = tdee + 300
+    elif goal == 'both':
+        calories = tdee
+    else:
+        calories = tdee
+    
+    return round(calories), tdee
+
+
+def calculate_sleep_target(profile):
+    """Calculate recommended sleep hours based on age"""
+    if not (profile and profile.age):
+        return None
+    
+    age_years = profile.age
+    if 16 <= age_years <= 18:
+        return 8
+    elif 19 <= age_years <= 64:
+        return 7
+    elif 65 <= age_years <= 80:
+        return 7.5
+    else:
+        return 8
+
+
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -118,74 +178,92 @@ def dashboard_view(request):
                     profile.save(update_fields=["start_tracking_date"])
             except Exception:
                 pass
+
+            # Check if plan needs updating based on log deviation
+            try:
+                profile = request.user.profile
+                calories_target, _ = calculate_calorie_target(profile)
+                recommended_sleep_hours = calculate_sleep_target(profile)
+                
+                latest_log = DailyLog.objects.filter(user=request.user).order_by('-date').first()
+                
+                # Check deviation thresholds
+                if latest_log and calories_target and recommended_sleep_hours:
+                    calorie_diff = abs(latest_log.calories - calories_target)
+                    sleep_diff = abs(float(latest_log.sleep_hours) - recommended_sleep_hours)
+                    
+                    if calorie_diff > 100 or sleep_diff > 1.0:  # Significant deviation
+                        # Regenerate plan with log data
+                        profile_data = {
+                            'age': profile.age, 'height': profile.height, 'current_weight': profile.current_weight,
+                            'target_weight': profile.target_weight, 'gender': profile.gender, 'goal': profile.goal,
+                            'exercise_place': profile.exercise_place, 'activity_level': profile.activity_level,
+                            'food_allergies': profile.food_allergies or 'None', 'health_problems': profile.health_problems or [],
+                            'other_health_problems': profile.other_health_problems or 'None', 'bmi': profile.bmi,
+                            'daily_log': {
+                                'date': str(latest_log.date), 'calories': latest_log.calories,
+                                'sleep_hours': float(latest_log.sleep_hours), 'exercise_minutes': latest_log.exercise_minutes,
+                                'recommended_calories': calories_target, 'recommended_sleep': recommended_sleep_hours,
+                            }
+                        }
+                        try:
+                            new_plan = AIPlan().generate_plan(profile_data)
+                            profile.weight_loss_plan = new_plan
+                            profile.save(update_fields=["weight_loss_plan"])
+                        except Exception:
+                            pass  # Don't break logging if AI fails
+            except Exception:
+                pass  # Don't break logging flow
             return redirect('dashboard')
     else:
         log_form = DailyLogForm()
 
     profile = getattr(request.user, "profile", None)
-    if profile and profile.age and profile.height and profile.current_weight and profile.gender:
-
-        height_cm = profile.height
-        weight_kg = profile.current_weight
-        age_years = profile.age
-
-        # Map gender char to string for BMR
-        gender_code = profile.gender
-        is_male = gender_code == 'M'
-
-        # BMR
-        if is_male:
-            bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age_years + 5
-        else:
-            bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age_years - 161
-
-        # Assume moderate activity if not specified in profile
-        activity_factor = 1.55
-        tdee = bmr * activity_factor
-
+    
+    # Calculate calorie and sleep recommendations
+    calories, _ = calculate_calorie_target(profile)
+    recommended_sleep_hours = calculate_sleep_target(profile)
+    
+    # Set calorie message based on goal
+    calorie_message = ""
+    if calories and profile:
         goal = profile.goal or ''
         if goal == 'lose_weight':
-            calories = tdee - 500
             calorie_message = "Recommended ~500 kcal deficit for weight loss."
         elif goal == 'maintain_weight':
-            calories = tdee
             calorie_message = "Maintain around your TDEE to keep current weight."
         elif goal == 'build_muscle':
-            calories = tdee + 300
             calorie_message = "Slight surplus (~+300 kcal) with higher protein for muscle gain."
         elif goal == 'both':
-            calories = tdee
             calorie_message = "Recomposition: around TDEE with high protein and resistance training."
         else:
-            calories = tdee
             calorie_message = "Balanced intake to support overall fitness."
-
-        calories = round(calories) if calories is not None else None
-
-        # Sleep based on age
+    
+    # Set sleep recommendation and message
+    sleep_recommendation = ""
+    sleep_message = ""
+    if recommended_sleep_hours and profile:
+        age_years = profile.age
         if 16 <= age_years <= 18:
-            base_sleep = "8 hours/night"
+            sleep_recommendation = "8 hours/night"
         elif 19 <= age_years <= 64:
-            base_sleep = "7 hours/night"
+            sleep_recommendation = "7 hours/night"
         elif 65 <= age_years <= 80:
-            base_sleep = "7–8 hours/night"
+            sleep_recommendation = "7–8 hours/night"
         else:
-            base_sleep = "7–9 hours/night"
-
-        goal_note = ""
+            sleep_recommendation = "7–9 hours/night"
+        
+        goal = profile.goal or ''
         if goal == 'build_muscle':
-            goal_note = "Aim toward upper end (8–9h) to support muscle recovery."
+            sleep_message = "Aim toward upper end (8–9h) to support muscle recovery."
         elif goal == 'lose_weight':
-            goal_note = "Consistent 7–9h improves appetite control and fat loss."
+            sleep_message = "Consistent 7–9h improves appetite control and fat loss."
         elif goal == 'both':
-            goal_note = "Prioritize 8h for recomposition and training performance."
+            sleep_message = "Prioritize 8h for recomposition and training performance."
         elif goal == 'maintain_weight':
-            goal_note = "Keep a steady schedule in the mid-range."
+            sleep_message = "Keep a steady schedule in the mid-range."
         elif goal == 'improve_fitness':
-            goal_note = "7–8h supports training adaptation and recovery."
-
-        sleep_recommendation = base_sleep
-        sleep_message = goal_note
+            sleep_message = "7–8h supports training adaptation and recovery."
 
     return render(request, "mainapp/dashboard.html", {
         "calories": calories,
