@@ -87,6 +87,12 @@
             gap: 0.5rem;
         }
 
+        .btn:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(102,126,234,.18);
+        }
+        .btn:active { transform: translateY(1px); }
+
         .btn-sm {
             padding: 0.4rem 0.9rem;
             font-size: 0.9rem;
@@ -96,18 +102,21 @@
             background: transparent;
             border: 2px solid #e74c3c;
             color: #e74c3c;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.12);
         }
 
         .btn-outline:hover {
             background: #e74c3c;
             color: white;
             transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(231, 76, 60, 0.28);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.28);
         }
 
         .btn-primary:hover {
@@ -131,7 +140,57 @@
             overflow: hidden;
         }
 
-        
+        /* Subtle animated blobs + sheen */
+        .welcome-banner::before,
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.25;
+            pointer-events: none;
+            mix-blend-mode: screen;
+        }
+        .welcome-banner::before {
+            width: 220px;
+            height: 220px;
+            top: -60px;
+            left: -40px;
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, rgba(255,255,255,0) 60%);
+            animation: floatBlob 12s ease-in-out infinite;
+        }
+        .welcome-banner::after {
+            width: 260px;
+            height: 260px;
+            bottom: -80px;
+            right: -60px;
+            background: radial-gradient(circle at 70% 70%, #ffeaa7 0%, rgba(255,234,167,0) 65%);
+            animation: floatBlob 14s ease-in-out infinite reverse;
+        }
+        @keyframes floatBlob {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            50% { transform: translate(10px, -10px) scale(1.05); }
+        }
+        .welcome-content h1 {
+            position: relative;
+            overflow: hidden;
+        }
+        .welcome-content h1::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150px;
+            width: 120px;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg);
+            animation: sheen 3.5s ease-in-out infinite;
+        }
+        @keyframes sheen {
+            0% { left: -150px; }
+            60% { left: 110%; }
+            100% { left: 110%; }
+        }
 
         .welcome-content {
             position: relative;
@@ -151,6 +210,34 @@
             font-size: 1.1rem;
             opacity: 1;
             margin-bottom: 1.5rem;
+        }
+
+        /* Animated gradient text utility */
+        .animated-gradient-text {
+            background: linear-gradient(135deg, #ffeaa7, #ffffff, #fdcb6e);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradientMove 6s ease-in-out infinite;
+        }
+        @keyframes textGradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Animated gradient text utility */
+        .animated-gradient-text {
+            background: linear-gradient(135deg, #ffeaa7, #ffffff, #fdcb6e);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradientMove 6s ease-in-out infinite;
+        }
+        @keyframes textGradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .profile-alert {
@@ -199,6 +286,15 @@
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
+
+        /* 3D tilt effect base (used by JS) */
+        .tiltable {
+            transform-style: preserve-3d;
+            will-change: transform;
+            transition: transform .15s ease, box-shadow .2s ease;
+        }
+        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(102,126,234,.35); }
+        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(102,126,234,.35); }
 
         .stat-card::before {
             content: '';
@@ -305,6 +401,10 @@
             color: #64748b;
             line-height: 1.6;
         }
+
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
         .progress-ring { width: 60px; height: 60px; position: relative; }
         .progress-circle {
@@ -475,10 +575,10 @@
     </header>
 
     <main class="main-content">
-        <div class="welcome-banner">
+        <div class="welcome-banner reveal">
             <div class="welcome-content">
-                <h1>Welcome back, <span class="highlight">{{ request.user.first_name|default:request.user.username }}!</span></h1>
-                <p>Track your progress and stay on top of your health goals</p>
+                <h1 class="animated-gradient-text">Welcome back, <span class="highlight">{{ request.user.first_name|default:request.user.username }}!</span></h1>
+                <p id="subtitleType">Track your progress and stay on top of your health goals</p>
             </div>
         </div>
 
@@ -491,7 +591,7 @@
         {% endif %}
 
         <div class="stats-grid">
-            <div class="stat-card {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}complete{% else %}incomplete{% endif %}">
+            <div class="stat-card tiltable reveal {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}complete{% else %}incomplete{% endif %}">
                 <div class="stat-header">
                     <div>
                         <h4>Profile Status</h4>
@@ -507,11 +607,11 @@
             </div>
 
             {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight %}
-            <div class="stat-card bmi">
+            <div class="stat-card bmi tiltable reveal">
                 <div class="stat-header">
                     <div>
                         <h4>Body Mass Index</h4>
-                        <div class="stat-value">{{ request.user.profile.bmi|floatformat:1 }}</div>
+                        <div class="stat-value" data-countup>{{ request.user.profile.bmi|floatformat:1 }}</div>
                         <div class="stat-label">Based on your profile</div>
                     </div>
                 </div>
@@ -519,7 +619,7 @@
             {% endif %}
 
             {% if request.user.profile.goal %}
-            <div class="stat-card goal">
+            <div class="stat-card goal tiltable reveal">
                 <div class="stat-header">
                     <div>
                         <h4>Current Goal</h4>
@@ -531,11 +631,11 @@
             {% endif %}
 
             {% if calories is not None %}
-            <div class="stat-card calories">
+            <div class="stat-card calories tiltable reveal">
                 <div class="stat-header">
                     <div>
                         <h4>Daily Calories</h4>
-                        <div class="stat-value">{{ calories }}</div>
+                        <div class="stat-value" data-countup>{{ calories }}</div>
                         <div class="stat-label">Recommended intake</div>
                     </div>
                 </div>
@@ -543,7 +643,7 @@
             {% endif %}
 
             {% if sleep_recommendation %}
-            <div class="stat-card sleep">
+            <div class="stat-card sleep tiltable reveal">
                 <div class="stat-header">
                     <div>
                         <h4>Sleep Target</h4>
@@ -596,7 +696,7 @@
 
         <!-- AI Weight Loss Plan Section -->
         {% if weight_loss_plan %}
-        <div id="weightLossPlanSection" class="weight-loss-plan-section">
+        <div id="weightLossPlanSection" class="weight-loss-plan-section reveal">
             <div class="plan-header">
                 <h3>Your Personalized Weight Loss Plan</h3>
                 <a href="{% url 'download_plan' %}" class="btn btn-primary">Download Plan</a>
@@ -609,19 +709,108 @@
 
         <div class="tips-section">
             {% if calorie_message %}
-            <div class="tip-card">
+            <div class="tip-card reveal tiltable">
                 <h4>Calorie Tip</h4>
                 <p>{{ calorie_message }}</p>
             </div>
             {% endif %}
 
             {% if sleep_message %}
-            <div class="tip-card">
+            <div class="tip-card reveal tiltable">
                 <h4>Sleep Recommendation</h4>
                 <p>{{ sleep_message }}</p>
             </div>
             {% endif %}
         </div>
     </main>
+    <script>
+    (function(){
+        // 3D tilt effect for cards
+        const tiltElements = document.querySelectorAll('.tiltable');
+        tiltElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -4; // subtle
+                const rotateY = ((x - centerX) / centerX) * 4;
+                el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+
+        // Scroll reveal
+        const revealEls = document.querySelectorAll('.reveal');
+        const reveal = () => {
+            const trigger = window.innerHeight * 0.9;
+            revealEls.forEach(el => {
+                const top = el.getBoundingClientRect().top;
+                if (top < trigger) el.classList.add('visible');
+            });
+        };
+        window.addEventListener('scroll', reveal);
+        window.addEventListener('load', reveal);
+
+        // Typewriter effect for subtitle
+        const subtitle = document.getElementById('subtitleType');
+        if (subtitle) {
+            const fullText = subtitle.textContent.trim();
+            subtitle.textContent = '';
+            let i = 0;
+            const type = () => {
+                if (i <= fullText.length) {
+                    subtitle.textContent = fullText.slice(0, i);
+                    i++;
+                    setTimeout(type, 22);
+                }
+            };
+            setTimeout(type, 400);
+        }
+
+        // Count-up effect for numeric stat values
+        const formatNumber = (n) => {
+            if (Number.isNaN(n)) return '';
+            return n.toLocaleString();
+        };
+        const animateCount = (el, target) => {
+            const isFloat = String(target).includes('.') || /\d+\.\d+/.test(String(target));
+            const duration = 1200;
+            const start = performance.now();
+            const initial = 0;
+            const animate = (now) => {
+                const progress = Math.min((now - start) / duration, 1);
+                const value = initial + (target - initial) * progress;
+                el.textContent = isFloat ? value.toFixed(1) : formatNumber(Math.round(value));
+                if (progress < 1) requestAnimationFrame(animate);
+            };
+            requestAnimationFrame(animate);
+        };
+        const runCountUps = () => {
+            document.querySelectorAll('[data-countup]').forEach(el => {
+                const raw = (el.getAttribute('data-target') || el.textContent || '').replace(/[^0-9.\-]/g, '');
+                const target = parseFloat(raw);
+                if (!Number.isNaN(target)) animateCount(el, target);
+            });
+        };
+        // Run when visible
+        let ran = false;
+        const tryRun = () => {
+            if (ran) return;
+            const first = document.querySelector('[data-countup]');
+            if (!first) return;
+            const rect = first.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                ran = true;
+                runCountUps();
+            }
+        };
+        window.addEventListener('scroll', tryRun);
+        window.addEventListener('load', tryRun);
+    })();
+    </script>
 </body>
 </html>
