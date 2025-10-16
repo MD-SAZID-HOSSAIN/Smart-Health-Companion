@@ -144,6 +144,11 @@ def home_view(request):
     return render(request, "mainapp/home.html")
 
 
+def about_view(request):
+    """About page with creators info"""
+    return render(request, "mainapp/about.html")
+
+
 @login_required
 def dashboard_view(request):
     calories = None

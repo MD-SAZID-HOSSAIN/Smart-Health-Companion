@@ -615,6 +615,65 @@
                         <div class="stat-label">Based on your profile</div>
                     </div>
                 </div>
+                <!-- BMI Meter -->
+                <div class="bmi-meter" data-bmi="{{ request.user.profile.bmi|default:0 }}">
+                    <style>
+                        .bmi-meter { position: relative; margin: 18px 12px 10px; }
+                        .bmi-scale { position: relative; height: 16px; border-radius: 999px; overflow: hidden; display: flex; background: linear-gradient(90deg, #e5f2fd, #e9fbf4 46.25%, #fff7e6 62.25%, #fdeaea); box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+                        .bmi-seg { height: 100%; opacity: 0.95; }
+                        .bmi-under { background: linear-gradient(90deg, #5db7ff, #4aa3f0); width: 46.25%; }
+                        .bmi-normal { background: linear-gradient(90deg, #36e3aa, #32d296); width: 16%; }
+                        .bmi-over { background: linear-gradient(90deg, #ffc56d, #f5a623); width: 12.5%; }
+                        .bmi-obese { background: linear-gradient(90deg, #ff7a6e, #e74c3c); width: 25.25%; }
+                        .bmi-ticks { position: absolute; inset: 0; pointer-events: none; }
+                        .bmi-ticks::before { content: ''; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.7) 1px, transparent 1px); background-size: calc(100%/8) 100%; mix-blend-mode: overlay; }
+                        .bmi-indicator { position: absolute; top: -7px; width: 20px; height: 20px; border-radius: 50%; background: #2c3e50; border: 3px solid #fff; box-shadow: 0 6px 16px rgba(0,0,0,0.18); transform: translateX(-50%); transition: left 400ms ease; }
+                        .bmi-scale-labels { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; margin-top: 8px; padding: 0 2px; }
+                        .bmi-category { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #374151; margin: 6px 12px 0; }
+                        .bmi-badge { padding: 4px 8px; border-radius: 999px; font-weight: 600; font-size: 12px; box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05); }
+                        .bmi-badge.under { background: #e6f3ff; color: #1367b9; }
+                        .bmi-badge.normal { background: #e7fbf3; color: #0f8a5b; }
+                        .bmi-badge.over { background: #fff3e0; color: #b26b00; }
+                        .bmi-badge.obese { background: #ffe8e6; color: #9f2a20; }
+                    </style>
+                    <div class="bmi-scale">
+                        <div class="bmi-seg bmi-under" title="Underweight < 18.5"></div>
+                        <div class="bmi-seg bmi-normal" title="Normal 18.5–24.9"></div>
+                        <div class="bmi-seg bmi-over" title="Overweight 25–29.9"></div>
+                        <div class="bmi-seg bmi-obese" title="Obesity ≥ 30"></div>
+                        <div class="bmi-ticks"></div>
+                        <div class="bmi-indicator" style="left: 0;"></div>
+                    </div>
+                    <div class="bmi-scale-labels">
+                        <span>0</span><span>10</span><span>20</span><span>30</span><span>40</span>
+                    </div>
+                    <div class="bmi-category">Category: <span class="bmi-badge">—</span><span class="bmi-category-text">—</span></div>
+                    <script>
+                        (function(){
+                            try {
+                                var meter = document.currentScript.parentElement;
+                                var bmiRaw = meter.getAttribute('data-bmi');
+                                var bmi = parseFloat(bmiRaw || '0');
+                                if (!isFinite(bmi)) bmi = 0;
+                                var capped = Math.max(0, Math.min(40, bmi));
+                                var percent = (capped / 40) * 100;
+                                var indicator = meter.querySelector('.bmi-indicator');
+                                indicator.style.left = percent + '%';
+                                var catTextEl = meter.querySelector('.bmi-category-text');
+                                var badge = meter.querySelector('.bmi-badge');
+                                var text = '—', cls = '';
+                                if (bmi < 18.5) { text = 'Underweight'; cls = 'under'; }
+                                else if (bmi < 25) { text = 'Normal'; cls = 'normal'; }
+                                else if (bmi < 30) { text = 'Overweight'; cls = 'over'; }
+                                else { text = 'Obesity'; cls = 'obese'; }
+                                catTextEl.textContent = 'BMI ' + (isFinite(bmi) ? bmi.toFixed(1) : '—');
+                                badge.textContent = text;
+                                badge.className = 'bmi-badge ' + cls;
+                            } catch(e) { /* no-op */ }
+                        })();
+                    </script>
+                </div>
+                <!-- End BMI Meter -->
             </div>
             {% endif %}
 
