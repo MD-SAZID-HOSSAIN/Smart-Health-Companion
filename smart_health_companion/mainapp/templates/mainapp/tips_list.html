@@ -68,6 +68,32 @@
             .nav-links { display: none; }
             .container { padding: 0 1rem 2rem; }
         }
+
+        /* Footer styles  */
+        .footer {
+            background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+            color: white;
+            padding: 3.5rem 0 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #10b981);
+            opacity: 0.9;
+        }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-section h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li { margin-bottom: 0.5rem; }
+        .footer-section ul li a { color: #94a3b8; text-decoration: none; transition: color 0.3s ease; }
+        .footer-section ul li a:hover { color: white; }
+        .footer-bottom { border-top: 1px solid #293446; padding-top: 1rem; text-align: center; color: #94a3b8; }
+        .footer-brand { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.75rem; font-weight: 800; font-size: 1.2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .footer-brand img { width: 28px; height: 28px; }
+        .footer-text { color: #94a3b8; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -118,6 +144,50 @@
             <div class="empty">No tips published yet. Check back soon!</div>
         {% endif %}
     </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <img src="{% static 'heart logo.png' %}" alt="Smart Health Companion">
+                        Smart Health Companion
+                    </div>
+                    <p class="footer-text">Your companion for a healthier, happier life. Personalized wellness solutions for everyone.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="{% url 'tips_list' %}">Tips & Tricks</a></li>
+                        <li><a href="{% url 'doctor' %}">Find a Doctor</a></li>
+                        <li><a href="{% url 'about' %}">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#help">Help Center</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="{% url 'tips_list' %}">Tips & Tricks</a></li>
+                        <li><a href="{% url 'doctor' %}">Find a Doctor</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                        <li><a href="#cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Smart Health Companion. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Header scroll effect

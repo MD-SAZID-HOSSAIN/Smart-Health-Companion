@@ -166,6 +166,26 @@ class AIPlan:
             If there is a deviation from recommended values, adjust the plan for the next 1–2 weeks to gently guide the user back on track, keeping safety and sustainability as top priorities. Provide concrete, actionable adjustments to meals, portions, and training volume/intensity.
             """
 
+        # Optional estimated goal timeline
+        goal_timeline_weeks = profile_data.get('goal_timeline_weeks')
+        goal_timeline_months = profile_data.get('goal_timeline_months')
+        timeline_text = ""
+        if goal_timeline_weeks is not None:
+            if isinstance(goal_timeline_weeks, str):
+                timeline_text = f"\nEstimated time to goal: {goal_timeline_weeks}."
+            else:
+                months_text = f" (~{goal_timeline_months} months)" if goal_timeline_months is not None else ""
+                timeline_text = f"\nEstimated time to reach target based on safe calorie adjustments: ~{goal_timeline_weeks} weeks{months_text}."
+
+        # Dynamic plan duration requirement using estimated time
+        if goal_timeline_weeks is None:
+            plan_duration_requirement = "Create a detailed 3 to 4 month weight loss plan"
+        elif isinstance(goal_timeline_weeks, str):
+            plan_duration_requirement = "Create a realistic plan focused on maintenance and optimization aligned with the user's current status"
+        else:
+            approx_months_text = f" (~{goal_timeline_months} months)" if goal_timeline_months is not None else ""
+            plan_duration_requirement = f"Create a detailed plan for approximately {goal_timeline_weeks} weeks{approx_months_text}"
+
         prompt = f"""
         Create a comprehensive, personalized weight loss plan for the following user profile:
 
@@ -190,13 +210,13 @@ class AIPlan:
         - Other Health Issues: {other_health_problems}
 
         **Requirements:**
-        1. Create a detailed 3 to 4 month weight loss plan
+        1. {plan_duration_requirement}
         2. Include specific meal recommendations (breakfast, lunch, dinner, snacks)
         3. Provide exercise plan for 3 or 4 days a week suitable for their profile
         4. Include hydration and sleep guidelines
-        5. Add progress tracking suggestions
+        5. Add progress tracking suggestions with weekly milestones aligned to the timeline
         6. Consider their food allergies and health conditions
-        7. Make it realistic and sustainable
+        7. Make it realistic and sustainable, keeping safe rates of change
         8. Format everything as HTML with proper styling, headings, and structure
         9. Use a professional, encouraging tone
         10. No need for an Introduction.
@@ -206,6 +226,7 @@ class AIPlan:
         NOTE: ALL STYLES SHOULD BE INLINE.
 
         {log_text}
+        {timeline_text}
         """
 
         return prompt

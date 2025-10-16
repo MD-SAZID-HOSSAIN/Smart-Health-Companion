@@ -19,7 +19,7 @@
         .b3 { width: 220px; height: 220px; background: #34d399; top: 40%; right: 30%; animation: float 14s ease-in-out infinite 0.5s; }
         @keyframes float { 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-15px)} }
 
-        .container { position: relative; z-index: 2; max-width: 1000px; margin: 60px auto; padding: 30px; }
+        .container { position: relative; z-index: 2; max-width: 1200px; margin: 60px auto; padding: 30px; }
 
         .card {
             background: rgba(255,255,255,0.95);
@@ -28,6 +28,7 @@
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 25px 60px rgba(0,0,0,0.15);
             overflow: hidden;
+            margin-bottom: 26px;
         }
 
         .header {
@@ -35,16 +36,16 @@
             text-align: center;
         }
         .title {
-            font-size: 2.4rem; font-weight: 800; margin-bottom: 10px;
+            font-size: 2.8rem; font-weight: 800; margin-bottom: 12px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             text-shadow: 0 2px 14px rgba(102,126,234,0.25);
         }
-        .subtitle { color: #6b7280; font-weight: 500; }
+        .subtitle { color: #475569; font-weight: 600; letter-spacing: .2px; }
 
-        .content { padding: 30px 40px 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
-        .about { color: #4b5563; line-height: 1.7; font-size: 1.05rem; }
-        .about p + p { margin-top: 12px; }
+        .content { padding: 30px 40px 40px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px; align-items: center; }
+        .about { color: #334155; line-height: 1.85; font-size: 1.12rem; }
+        .about p + p { margin-top: 14px; }
 
         .creators { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .person {
@@ -58,18 +59,18 @@
         .person-link { display: inline-block; position: relative; border-radius: 16px; outline: none; }
         .person-link:focus { box-shadow: 0 0 0 3px rgba(102,126,234,0.35); }
         .avatar {
-            width: 160px; height: 160px; margin: 0 auto 14px; border-radius: 16px;
+            width: 200px; height: 200px; margin: 0 auto 16px; border-radius: 20px;
             background: url('{% static "placeholder-avatar.png" %}') center/cover, linear-gradient(135deg,#667eea,#764ba2);
-            border: 6px solid white; box-shadow: 0 14px 28px rgba(102,126,234,0.28);
+            border: 8px solid white; box-shadow: 0 18px 42px rgba(102,126,234,0.28);
             position: relative; animation: avFloat 6s ease-in-out infinite;
             transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
         }
-        .avatar:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 20px 40px rgba(102,126,234,0.32); }
+        .avatar:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 26px 56px rgba(102,126,234,0.34); }
         @keyframes avFloat { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } }
         .av-sazid { background-image: url('{% static "sazid.jpeg" %}'), linear-gradient(135deg,#667eea,#764ba2); }
         .av-hasnat { background-image: url('{% static "hasnat.jpeg" %}'), linear-gradient(135deg,#667eea,#764ba2); }
-        .name { font-size: 1.2rem; font-weight: 800; color: #111827; letter-spacing: 0.3px; }
-        .role { font-size: 0.9rem; color: #6b7280; margin-top: 4px; }
+        .name { font-size: 1.3rem; font-weight: 800; color: #0f172a; letter-spacing: 0.35px; }
+        .role { font-size: 0.95rem; color: #64748b; margin-top: 6px; }
 
         .socials { margin-top: 12px; display: flex; justify-content: center; gap: 10px; }
         .icon-btn {
@@ -89,6 +90,12 @@
 
         @media (max-width: 900px){ .content { grid-template-columns: 1fr; } }
         @media (max-width: 600px){ .creators { grid-template-columns: 1fr; } }
+
+        /* Simple button styles */
+        .btn { display: inline-block; padding: 10px 16px; border-radius: 999px; text-decoration: none; font-weight: 700; transition: transform .15s ease, box-shadow .2s ease; }
+        .btn:active { transform: translateY(1px); }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; box-shadow: 0 6px 16px rgba(102,126,234,0.28); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(102,126,234,0.4); }
     </style>
 </head>
 <body>
@@ -145,6 +152,9 @@
             <div class="footerbar">
                 Thanks for visiting — stay healthy and inspired!
             </div>
+        </div>
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
         </div>
     </div>
 </body>

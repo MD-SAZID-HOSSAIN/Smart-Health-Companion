@@ -71,6 +71,41 @@ def calculate_sleep_target(profile):
         return 8
 
 
+def estimate_goal_time(profile, calorie_target):
+    """
+    Estimate time (in weeks and months) to reach the target weight
+    based on calorie difference and goal type.
+    """
+    if not (profile and profile.current_weight and profile.target_weight and calorie_target):
+        return None, None
+
+    # Calculate total weight difference
+    weight_diff = profile.target_weight - profile.current_weight
+
+    # If already at target
+    if abs(weight_diff) < 0.1:
+        return "Already at target weight", None
+
+    # Determine direction and calorie change per day
+    goal = profile.goal
+    if goal == 'lose_weight' and weight_diff < 0:
+        daily_diff = 500  # kcal deficit
+    elif goal == 'build_muscle' and weight_diff > 0:
+        daily_diff = 300  # kcal surplus
+    elif goal == 'both':
+        daily_diff = 400  # mixed recomposition rate
+    else:
+        daily_diff = 300  # default mild rate
+
+    # Calculate estimated days
+    total_kcal_needed = abs(weight_diff) * 7700
+    estimated_days = total_kcal_needed / daily_diff
+    estimated_weeks = estimated_days / 7
+    estimated_months = estimated_days / 30.44
+
+    return round(estimated_weeks, 1), round(estimated_months, 1)
+
+
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -108,6 +143,7 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
+        next_url = request.POST.get("next") or request.GET.get("next")
 
         if not username or not password:
             return render(request, "mainapp/login.html", {
@@ -119,6 +155,8 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                if next_url:
+                    return redirect(next_url)
                 return redirect("dashboard")
             else:
                 return render(request, "mainapp/login.html", {
@@ -136,7 +174,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("login")
+    return redirect("home")
 
 
 def home_view(request):
@@ -211,6 +249,13 @@ def dashboard_view(request):
                                 'recommended_calories': calories_target, 'recommended_sleep': recommended_sleep_hours,
                             }
                         }
+                        # Attach estimated goal timeline
+                        try:
+                            goal_weeks, goal_months = estimate_goal_time(profile, calories_target)
+                            profile_data['goal_timeline_weeks'] = goal_weeks
+                            profile_data['goal_timeline_months'] = goal_months
+                        except Exception:
+                            pass
                         try:
                             new_plan = AIPlan().generate_plan(profile_data)
                             profile.weight_loss_plan = new_plan
@@ -228,6 +273,7 @@ def dashboard_view(request):
     # Calculate calorie and sleep recommendations
     calories, _ = calculate_calorie_target(profile)
     recommended_sleep_hours = calculate_sleep_target(profile)
+    goal_weeks, goal_months = estimate_goal_time(profile, calories)
     
     # Set calorie message based on goal
     calorie_message = ""
@@ -277,17 +323,19 @@ def dashboard_view(request):
         "sleep_message": sleep_message,
         "weight_loss_plan": profile.weight_loss_plan if profile else None,
         "log_form": log_form,
+        "goal_weeks": goal_weeks,
+        "goal_months": goal_months,
     })
 
 
 @login_required
 def complete_profile_view(request):
     # Ensure profile exists
-    profile, created = request.user.profile, False
     if not hasattr(request.user, 'profile'):
         from .models import Profile
         profile = Profile.objects.create(user=request.user)
-        created = True
+    else:
+        profile = request.user.profile
 
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
@@ -310,6 +358,15 @@ def complete_profile_view(request):
                     'other_health_problems': profile.other_health_problems or 'None',
                     'bmi': profile.bmi
                 }
+
+                # Attach estimated goal timeline
+                try:
+                    calories_target, _ = calculate_calorie_target(profile)
+                    goal_weeks, goal_months = estimate_goal_time(profile, calories_target)
+                    profile_data['goal_timeline_weeks'] = goal_weeks
+                    profile_data['goal_timeline_months'] = goal_months
+                except Exception:
+                    pass
 
                 ai_service = AIPlan()
                 weight_loss_plan = ai_service.generate_plan(profile_data)

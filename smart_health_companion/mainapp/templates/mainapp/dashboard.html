@@ -606,7 +606,7 @@
                 </div>
             </div>
 
-            {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight %}
+            {% if request.user.profile and request.user.profile.age and request.user.profile.height and request.user.profile.current_weight %}
             <div class="stat-card bmi tiltable reveal">
                 <div class="stat-header">
                     <div>
@@ -708,6 +708,23 @@
                         <h4>Sleep Target</h4>
                         <div class="stat-value">{{ sleep_recommendation }}</div>
                         <div class="stat-label">Nightly recommendation</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if goal_weeks or goal_months %}
+            <div class="stat-card goal tiltable reveal">
+                <div class="stat-header">
+                    <div>
+                        <h4>Goal Timeline</h4>
+                        {% if goal_weeks and goal_weeks != 'Already at target weight' %}
+                            <div class="stat-value" data-countup>{{ goal_weeks }}</div>
+                            <div class="stat-label">weeks (≈ {{ goal_months }} months)</div>
+                        {% else %}
+                            <div class="stat-value">{{ goal_weeks }}</div>
+                            <div class="stat-label">Stay consistent to maintain</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

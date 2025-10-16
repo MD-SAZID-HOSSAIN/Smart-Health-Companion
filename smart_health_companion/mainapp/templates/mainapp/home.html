@@ -644,9 +644,18 @@
 
         /* Footer */
         .footer {
-            background: #1e293b;
+            background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 3.5rem 0 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #10b981);
+            opacity: 0.9;
         }
 
         .footer-content {
@@ -681,11 +690,40 @@
         }
 
         .footer-bottom {
-            border-top: 1px solid #334155;
+            border-top: 1px solid #293446;
             padding-top: 1rem;
             text-align: center;
             color: #94a3b8;
         }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.75rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .footer-brand img { width: 28px; height: 28px; }
+        .footer-text { color: #94a3b8; line-height: 1.6; }
+
+        .footer-socials { display: flex; gap: 0.6rem; margin-top: 1rem; }
+        .social-btn {
+            width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+            background: #0b1220; color: #cbd5e1; border: 1px solid #1f2937; text-decoration: none; transition: transform .2s ease, background .2s ease;
+        }
+        .social-btn:hover { transform: translateY(-2px); background: #111827; }
+
+        .newsletter { margin-top: 0.5rem; }
+        .newsletter p { color: #94a3b8; margin-bottom: 0.6rem; }
+        .newsletter-form { display: flex; gap: 0.5rem; }
+        .newsletter-input { flex: 1; padding: 0.65rem 0.8rem; border-radius: 10px; border: 1px solid #1f2937; background: #0b1220; color: #e5e7eb; outline: none; }
+        .newsletter-input::placeholder { color: #6b7280; }
+        .newsletter-btn { padding: 0.65rem 0.95rem; border-radius: 10px; border: 0; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; font-weight: 600; cursor: pointer; }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -999,13 +1037,16 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3><i class="fas fa-heartbeat"></i> Smart Health</h3>
-                    <p>Your companion for a healthier, happier life. Personalized wellness solutions for everyone.</p>
+                    <div class="footer-brand">
+                        <img src="{% static 'heart logo.png' %}" alt="Smart Health Companion">
+                        Smart Health Companion
+                    </div>
+                    <p class="footer-text">Your companion for a healthier, happier life. Personalized wellness solutions for everyone.</p>
                 </div>
                 <div class="footer-section">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
+                        <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="#features">Features</a></li>
                         <li><a href="#how-it-works">How It Works</a></li>
                         <li><a href="{% url 'register' %}">Sign Up</a></li>
@@ -1017,8 +1058,8 @@
                     <ul>
                         <li><a href="#help">Help Center</a></li>
                         <li><a href="#contact">Contact Us</a></li>
-                        <li><a href="#tips">Tips & Tricks</a></li>
-                        <li><a href="#doctors">Find a Doctor</a></li>
+                        <li><a href="{% url 'tips_list' %}">Tips & Tricks</a></li>
+                        <li><a href="{% url 'doctor' %}">Find a Doctor</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
