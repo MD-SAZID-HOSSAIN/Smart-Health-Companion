@@ -15,7 +15,7 @@ def send_otp_email(user):
         f"You requested to reset your Smart Health Companion password.\n\n"
         f"Your OTP is: {otp}\n"
         f"It will expire in 5 minutes.\n\n"
-        f"If you did not request this, ignore this email.\n\n"
+        f"If you did not request this, ignore this email.\n"
         f"Best regards,\n"
         f"The Smart Health Companion Team"
     )
