@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - Smart Health Companion</title>
+    <title>Verify OTP - Smart Health Companion</title>
     {% load static %}
     <style>
         * {
@@ -18,6 +18,7 @@
             position: relative;
         }
 
+        /* Floating pulse circles */
         .fitness-decor {
             position: fixed;
             inset: 0;
@@ -49,15 +50,7 @@
             50% { transform: translateY(-20px) translateX(10px) scale(1.05); opacity: 1; }
         }
 
-
-        .fitness-decor::after {
-            content: '';
-            position: absolute;
-            inset: -50% -50% -50% -50%;
-            background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 8px, rgba(255,255,255,0.01) 8px 24px);
-            transform: rotate(0.001deg);
-        }
-
+        /* Heartbeat ECG line at bottom */
         .heartbeat-wrap {
             position: fixed;
             left: 0;
@@ -66,7 +59,6 @@
             height: 120px;
             z-index: 1;
             pointer-events: none;
-            opacity: 1;
         }
 
         .heartbeat-wrap::before {
@@ -74,7 +66,6 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(to top, rgba(0,0,0,0.28), rgba(0,0,0,0));
-            pointer-events: none;
         }
 
         .heartbeat {
@@ -95,26 +86,12 @@
             to { stroke-dashoffset: -200; }
         }
 
-        body::after {
-            content: '';
-            position: fixed;
-            right: -40px;
-            top: 10%;
-            width: 320px;
-            height: 320px;
-            background: url('{% static "heart logo.png" %}') no-repeat center/contain;
-            opacity: 0.06;
-            z-index: 1;
-            transform: rotate(-15deg);
-            pointer-events: none;
-            filter: blur(0.2px);
-        }
-
+        /* Frosted glass container */
         .container {
             position: relative;
             z-index: 2;
             max-width: 500px;
-            margin: 50px auto;
+            margin: 60px auto;
             padding: 40px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -132,31 +109,12 @@
         h2 {
             color: #2c3e50;
             text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 25px;
+            font-size: 2em;
             font-weight: 300;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .error-message {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
         }
 
         .form-group {
@@ -182,52 +140,19 @@
             font-size: 16px;
             background: rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
             background: white;
+            transform: translateY(-2px);
         }
 
         .form-group input:hover {
             border-color: #bdc3c7;
             transform: translateY(-1px);
-        }
-
-        .link-text {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .link-text a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .link-text a:hover {
-            color: #764ba2;
-        }
-
-        .link-text a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-
-        .link-text a:hover::after {
-            width: 100%;
         }
 
         .submit-btn {
@@ -240,7 +165,7 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 30px;
+            margin-top: 20px;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -264,7 +189,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.5s;
         }
 
@@ -272,51 +197,35 @@
             left: 100%;
         }
 
-        .register-link {
+        .error-message, .success-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
             text-align: center;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #e0e6ed;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .register-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
+        .error-message {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            animation: shake 0.5s ease-in-out;
         }
 
-        .register-link a:hover {
-            color: #764ba2;
+        .success-message {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
         }
 
-        .register-link a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .register-link a:hover::after {
-            width: 100%;
-        }
-
-        .welcome-text {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #7f8c8d;
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
-        .home-btn {
+        .back-btn {
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 12px 24px;
             border-radius: 30px;
             border: 2px solid #667eea;
@@ -327,37 +236,15 @@
             text-align: center;
         }
 
-        .home-btn:hover {
+        .back-btn:hover {
             background: #667eea;
             color: white;
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .icon-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .icon {
-            width: 170px;
-            height: auto;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
         @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 30px;
-            }
-
-            h2 {
-                font-size: 2em;
-            }
+            .container { margin: 20px; padding: 30px; }
+            h2 { font-size: 1.7em; }
         }
     </style>
 </head>
@@ -378,50 +265,31 @@
     </div>
 
     <div class="container">
-        <div class="icon-container">
-            <img src="{% static 'smart-health-companion-logo.png' %}" alt="Smart Health Companion Logo" class="icon">
-        </div>
-
-        <h2>Welcome Back</h2>
-
-        <div class="welcome-text">
-            Sign in to access your personalized health advice
-        </div>
+        <h2>Verify OTP & Set New Password</h2>
 
         {% if success_message %}
-            <div style="background: linear-gradient(45deg, #2ecc71, #27ae60); color: white; padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; font-weight: 500; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);">
-                {{ success_message }}
-            </div>
+            <div class="success-message">{{ success_message }}</div>
         {% endif %}
-
         {% if error %}
             <div class="error-message">{{ error }}</div>
         {% endif %}
 
-        <form method="POST">
+        <form method="post">
             {% csrf_token %}
-            {% if request.GET.next %}
-                <input type="hidden" name="next" value="{{ request.GET.next }}">
-            {% endif %}
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" required placeholder="Enter your username">
+                <label for="otp">OTP</label>
+                <input type="text" name="otp" id="otp" maxlength="6" required placeholder="Enter OTP">
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" required placeholder="Enter your password">
+                <label for="new_password">New Password</label>
+                <input type="password" name="new_password" id="new_password" required placeholder="Enter New Password">
             </div>
-            <div class="link-text">
-                <p><a href="{% url 'forgot_password' %}">Forgot your password</a></p>
-            </div>
-            <button type="submit" class="submit-btn">Sign In</button>
+            <button type="submit" class="submit-btn">Reset Password</button>
         </form>
 
-        <div class="register-link">
-            <p>Don't have an account? <a href="{% url 'register' %}">Create One</a></p>
-            <p style="margin-top: 10px;"><a class="home-btn" href="{% url 'home' %}">Back to Home</a></p>
-        </div>
+        <p style="text-align:center; margin-top:20px;">
+            <a class="back-btn" href="{% url 'login' %}">Back to Login</a>
+        </p>
     </div>
-
 </body>
 </html>

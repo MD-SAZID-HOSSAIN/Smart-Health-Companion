@@ -13,6 +13,8 @@ urlpatterns = [
     path("doctors/", views.doctor_view, name="doctor"),
     path("download-plan/", views.download_plan_view, name="download_plan"),
     path("logs/", views.logs_view, name="logs"),
+    path('forgot-password/', views.forgot_password_view, name='forgot_password'),
+    path('verify-otp/<int:user_id>/', views.verify_otp_view, name='verify_otp'),
     
 ]
 

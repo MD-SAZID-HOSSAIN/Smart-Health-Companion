@@ -9,7 +9,10 @@ from django.core.paginator import Paginator
 import calendar
 from datetime import date as dt_date
 from .ai_service import AIPlan
-
+from django.contrib.auth.models import User
+from django.contrib import messages
+from .models import PasswordResetOTP
+from .utils import send_otp_email
 
 def calculate_calorie_target(profile):
     """Calculate recommended daily calories based on profile data"""
@@ -452,4 +455,37 @@ def logs_view(request):
         "calendar_month_name": month_name,
         "calendar_year": base_date.year,
     })
+#Forgot password OTP
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = User.objects.get(email=email)
+            send_otp_email(user)
+            messages.success(request, "OTP sent to your email.")
+            return redirect("verify_otp", user_id=user.id)
+        except User.DoesNotExist:
+            messages.error(request, "No user found with that email.")
+    return render(request, "mainapp/forgot_password.html")
+
+from django.contrib.auth.hashers import make_password
+
+def verify_otp_view(request, user_id):
+    user = User.objects.get(id=user_id)
+    if request.method == "POST":
+        otp_input = request.POST.get("otp")
+        new_password = request.POST.get("new_password")
+        try:
+            otp_record = PasswordResetOTP.objects.get(user=user, otp=otp_input, is_used=False)
+            if otp_record.is_expired():
+                messages.error(request, "OTP expired.")
+            else:
+                user.password = make_password(new_password)
+                user.save()
+                otp_record.is_used = True
+                messages.success(request, "Password changed successfully.")
+                return redirect("login")
+        except PasswordResetOTP.DoesNotExist:
+            messages.error(request, "Invalid OTP.")
+    return render(request, "mainapp/verify_otp.html")
 
