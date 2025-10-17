@@ -31,6 +31,37 @@
         .page-btn { padding:.4rem .7rem; border:1px solid #e2e8f0; border-radius:8px; background:white; color:#111827; text-decoration:none; }
         .page-btn.active { background:#667eea; color:white; border-color:#667eea; }
         .page-btn.disabled { opacity:.5; pointer-events:none; }
+
+        /* Stats summary */
+        .stats-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem; }
+        .stat { background:white; border-radius:14px; box-shadow:0 8px 24px rgba(2,6,23,.08); padding:1rem 1.2rem; position:relative; overflow:hidden; border:1px solid rgba(226,232,240,.6); }
+        .stat-title { font-size:.9rem; color:#64748b; display:flex; align-items:center; gap:.5rem; }
+        .stat-value { font-size:1.6rem; font-weight:800; color:#0f172a; margin-top:.25rem; }
+        .chip { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:.9rem; background:linear-gradient(135deg,#667eea,#764ba2); }
+        .mini-chart { height:48px; background:linear-gradient(90deg,#eef2ff,#f5f3ff); border-radius:8px; padding:6px; display:flex; align-items:flex-end; gap:3px; }
+        .mini-bar { flex:1; background:linear-gradient(180deg,#667eea,#764ba2); border-radius:3px; min-height:3px; opacity:.85; transition:height .3s ease; }
+
+        /* Filters and actions */
+        .actions-row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+        .btn-soft { background:#eef2ff; color:#4338ca; border:1px solid #c7d2fe; }
+        .btn-soft:hover { background:#e0e7ff; }
+        .btn-ghost { background:white; color:#0f172a; border:1px solid #e2e8f0; }
+        .btn-ghost:hover { background:#f8fafc; }
+
+        /* Calendar  */
+        .cal-wrap { overflow-x:auto; }
+        .cal { width:100%; border-collapse:separate; border-spacing:8px; }
+        .cal th { text-align:center; font-size:.85rem; color:#64748b; font-weight:600; padding:.25rem 0; }
+        .cal-day { display:inline-flex; width:44px; height:44px; align-items:center; justify-content:center; border-radius:12px; font-weight:700; border:1px solid #e2e8f0; background:#f8fafc; color:#0f172a; box-shadow: 0 1px 2px rgba(2,6,23,.04); transition: transform .15s ease, box-shadow .2s ease; }
+        .cal-day:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(2,6,23,.10); }
+        .cal-start { background:linear-gradient(135deg,#fee2e2,#fecaca); color:#991b1b; border-color:#fecaca; }
+        .cal-logged { background:#e5e7eb; color:#111827; border-color:#d1d5db; }
+        .cal-today { outline: 2px solid #6366f1; outline-offset: 2px; }
+        .cal-legend { display:flex; gap:1rem; align-items:center; margin-top:.5rem; color:#64748b; font-size:.9rem; }
+        .legend-chip { display:inline-flex; width:14px; height:14px; border-radius:4px; border:1px solid #e2e8f0; background:#f8fafc; }
+        .legend-chip.start { background:#fecaca; border-color:#fecaca; }
+        .legend-chip.today { background:#eef2ff; border-color:#c7d2fe; box-shadow: 0 0 0 2px #6366f1 inset; }
+        .legend-chip.logged { background:#e5e7eb; border-color:#d1d5db; }
     </style>
 </head>
 <body>
@@ -51,30 +82,37 @@
                     <div class="muted">Start date is highlighted in red.</div>
                 </div>
             </div>
-            <div style="overflow-x:auto;">
-                <div style="min-width:320px;">
-                    <div style="font-weight:700; margin-bottom:.5rem;">{{ calendar_month_name }} {{ calendar_year }}</div>
-                    <table style="width:100%; border-collapse:separate; border-spacing:4px;">
+            <div class="cal-wrap">
+                <div style="min-width:360px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem;">
+                        <div style="font-weight:800;">{{ calendar_month_name }} {{ calendar_year }}</div>
+                        <div class="cal-legend">
+                            <span><span class="legend-chip start"></span> Start</span>
+                            <span><span class="legend-chip logged"></span> Logged</span>
+                            <span><span class="legend-chip today"></span> Today</span>
+                        </div>
+                    </div>
+                    <table class="cal">
                         <thead>
-                            <tr class="muted">
-                                <th style="text-align:center;">Sun</th>
-                                <th style="text-align:center;">Mon</th>
-                                <th style="text-align:center;">Tue</th>
-                                <th style="text-align:center;">Wed</th>
-                                <th style="text-align:center;">Thu</th>
-                                <th style="text-align:center;">Fri</th>
-                                <th style="text-align:center;">Sat</th>
+                            <tr>
+                                <th>Sun</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for week in calendar_weeks %}
                             <tr>
                                 {% for d in week %}
-                                <td style="text-align:center; padding:.4rem;">
+                                <td style="text-align:center; padding:.25rem;">
                                     {% if d.is_blank %}
-                                        <span style="display:inline-block; width:36px; height:36px;"></span>
+                                        <span style="display:inline-block; width:44px; height:44px;"></span>
                                     {% else %}
-                                        <span style="display:inline-flex; width:36px; height:36px; align-items:center; justify-content:center; border-radius:8px; font-weight:600; {% if d.is_start %}background:#fee2e2; color:#b91c1c; border:1px solid #fecaca;{% else %}background:#f8fafc; color:#0f172a; border:1px solid #e2e8f0;{% endif %}">{{ d.num }}</span>
+                                        <span class="cal-day {% if d.is_start %}cal-start{% endif %} {% if d.is_logged %}cal-logged{% endif %} {% if d.is_today %}cal-today{% endif %}">{{ d.num }}</span>
                                     {% endif %}
                                 </td>
                                 {% endfor %}
@@ -92,7 +130,32 @@
                     <div class="title">Your Tracking Logs</div>
                     <div class="muted">Total entries: {{ total_count }}</div>
                 </div>
-                <a href="{% url 'dashboard' %}" class="btn btn-primary">Add New Log</a>
+                <div class="actions-row">
+                    <button id="filterWeek" class="btn btn-soft">This Week</button>
+                    <button id="filterMonth" class="btn btn-soft">This Month</button>
+                    <button id="filterClear" class="btn btn-ghost">Clear</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary">Add New Log</a>
+                </div>
+            </div>
+
+            <div id="noResults" class="muted" style="display:none; margin: .25rem 0 .75rem;">
+                No logs match the selected period.
+            </div>
+
+            <div class="stats-grid" id="statsGrid" aria-hidden="true">
+                <div class="stat">
+                    <div class="stat-title">Avg Calories</div>
+                    <div class="stat-value" id="avgCalories">—</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-title">Avg Sleep (h)</div>
+                    <div class="stat-value" id="avgSleep">—</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-title">Total Exercise (min)</div>
+                    <div class="stat-value" id="totalExercise">—</div>
+                </div>
+
             </div>
 
             <div class="table-wrap">
@@ -107,7 +170,7 @@
                     </thead>
                     <tbody>
                         {% for log in page_obj.object_list %}
-                        <tr>
+                        <tr data-date="{{ log.date|date:'Y-m-d' }}" data-calories="{{ log.calories }}" data-sleep="{{ log.sleep_hours }}" data-exercise="{{ log.exercise_minutes }}">
                             <td>{{ log.date }}</td>
                             <td>{{ log.calories }}</td>
                             <td>{{ log.sleep_hours }}</td>
@@ -143,6 +206,102 @@
             </div>
         </div>
     </main>
+    <script>
+    (function(){
+        // Parse table rows into data
+        const rows = Array.from(document.querySelectorAll('tbody tr[data-date]'));
+        const parseDate = (s) => {
+            if (!s) return new Date('invalid');
+
+            if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+                const [y,m,d] = s.split('-').map(Number);
+                return new Date(y, m-1, d);
+            }
+            // Fallback
+            return new Date(s);
+        };
+
+        function withinThisWeek(d){
+            const now = new Date();
+            const day = now.getDay();
+            const diffToSunday = now.getDate() - day; // start of week (Sun)
+            const start = new Date(now); start.setHours(0,0,0,0); start.setDate(diffToSunday);
+            const end = new Date(start); end.setDate(start.getDate()+7);
+            return d >= start && d < end;
+        }
+        function withinThisMonth(d){
+            const now = new Date();
+            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }
+
+        function updateStats(filtered){
+            const noResultsEl = document.getElementById('noResults');
+            if (!filtered.length) {
+                document.getElementById('statsGrid').setAttribute('aria-hidden','true');
+                if (noResultsEl) noResultsEl.style.display = '';
+                return;
+            }
+            if (noResultsEl) noResultsEl.style.display = 'none';
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.removeAttribute('aria-hidden');
+            let sumCal=0, sumSleep=0, sumEx=0;
+            const calSeries = [];
+            filtered.forEach(tr=>{
+                const calRaw = Number(tr.dataset.calories);
+                const slpRaw = Number(tr.dataset.sleep);
+                const exRaw  = Number(tr.dataset.exercise);
+                const cal = isNaN(calRaw) ? 0 : calRaw;
+                const slp = isNaN(slpRaw) ? 0 : slpRaw;
+                const ex  = isNaN(exRaw)  ? 0 : exRaw;
+                sumCal += cal; sumSleep += slp; sumEx += ex; calSeries.push(cal);
+            });
+            const avgCal = sumCal/filtered.length || 0;
+            const avgSlp = sumSleep/filtered.length || 0;
+            document.getElementById('avgCalories').textContent = Math.round(avgCal).toLocaleString();
+            document.getElementById('avgSleep').textContent = avgSlp.toFixed(1);
+            document.getElementById('totalExercise').textContent = Math.round(sumEx).toLocaleString();
+
+            // Mini chart (last up to 14 entries on current page)
+            const chart = document.getElementById('miniChart');
+            chart.innerHTML = '';
+            const series = calSeries.slice(-14);
+            const max = Math.max(1, ...series);
+            series.forEach(v=>{
+                const bar = document.createElement('div');
+                bar.className = 'mini-bar';
+                const h = Math.max(6, Math.round((v/max)*44));
+                bar.style.height = h+'px';
+                chart.appendChild(bar);
+            });
+        }
+
+        function applyFilter(kind){
+            const filtered = rows.filter(tr=>{
+                const d = parseDate(tr.dataset.date);
+                if (!(d instanceof Date) || isNaN(d)) return false;
+                if (kind==='week') return withinThisWeek(d);
+                if (kind==='month') return withinThisMonth(d);
+                return true;
+            });
+            rows.forEach(tr=>tr.style.display='none');
+            (filtered.length?filtered:rows).forEach(tr=>tr.style.display='');
+            updateStats(filtered.length?filtered:rows);
+        }
+
+        // Initial stats for current page
+        updateStats(rows);
+
+        // Wire buttons
+        const btnW = document.getElementById('filterWeek');
+        const btnM = document.getElementById('filterMonth');
+        const btnC = document.getElementById('filterClear');
+        if (btnW) btnW.addEventListener('click', ()=>applyFilter('week'));
+        if (btnM) btnM.addEventListener('click', ()=>applyFilter('month'));
+        if (btnC) btnC.addEventListener('click', ()=>applyFilter('all'));
+
+        // no export
+    })();
+    </script>
 </body>
 </html>
 

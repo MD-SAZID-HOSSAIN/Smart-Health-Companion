@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from .forms import RegisterForm, ProfileForm, DailyLogForm
@@ -15,7 +16,7 @@ from .models import PasswordResetOTP
 from .utils import send_otp_email
 
 def calculate_calorie_target(profile):
-    """Calculate recommended daily calories based on profile data"""
+    #Calculate daily calories based on profile data
     if not (profile and profile.age and profile.height and profile.current_weight and profile.gender):
         return None, None
     
@@ -59,7 +60,8 @@ def calculate_calorie_target(profile):
 
 
 def calculate_sleep_target(profile):
-    """Calculate recommended sleep hours based on age"""
+
+    #Calculate recommended sleep hours based on age
     if not (profile and profile.age):
         return None
     
@@ -75,10 +77,7 @@ def calculate_sleep_target(profile):
 
 
 def estimate_goal_time(profile, calorie_target):
-    """
-    Estimate time (in weeks and months) to reach the target weight
-    based on calorie difference and goal type.
-    """
+
     if not (profile and profile.current_weight and profile.target_weight and calorie_target):
         return None, None
 
@@ -160,7 +159,7 @@ def login_view(request):
                 login(request, user)
                 if next_url:
                     return redirect(next_url)
-                return redirect("dashboard")
+                return redirect('dashboard_username', username=user.username)
             else:
                 return render(request, "mainapp/login.html", {
                     "error": "Your account is disabled. Please contact support.",
@@ -181,7 +180,6 @@ def logout_view(request):
 
 
 def home_view(request):
-    """Home view that displays the landing page"""
     return render(request, "mainapp/home.html")
 
 
@@ -191,7 +189,15 @@ def about_view(request):
 
 
 @login_required
-def dashboard_view(request):
+def dashboard_redirect_self(request):
+    return redirect('dashboard_username', username=request.user.username)
+
+
+@login_required
+def dashboard_view(request, username=None):
+
+    if username and username != request.user.username:
+        return redirect('dashboard_username', username=request.user.username)
     calories = None
     calorie_message = ""
     sleep_recommendation = ""
@@ -267,7 +273,7 @@ def dashboard_view(request):
                             pass  # Don't break logging if AI fails
             except Exception:
                 pass  # Don't break logging flow
-            return redirect('dashboard')
+            return redirect('dashboard_username', username=request.user.username)
     else:
         log_form = DailyLogForm()
 
@@ -433,15 +439,28 @@ def logs_view(request):
 
     cal = calendar.Calendar(firstweekday=6)  # 6 = Sunday
     month_days = cal.monthdayscalendar(base_date.year, base_date.month)
-    #  for start date
+    # collect days with logs for the displayed month/year
+    logged_days_set = set(
+        DailyLog.objects.filter(
+            user=request.user,
+            date__year=base_date.year,
+            date__month=base_date.month,
+        ).values_list('date__day', flat=True)
+    )
+    #  for start date and logged markers
     month_weeks = []
+    today = dt_date.today()
     for week in month_days:
         week_cells = []
         for day in week:
+            is_blank = day == 0
+            is_today = (not is_blank and today.year == base_date.year and today.month == base_date.month and today.day == day)
             cell = {
                 'num': day,
-                'is_blank': day == 0,
-                'is_start': bool(start_date and day == start_date.day and base_date.month == start_date.month and base_date.year == start_date.year)
+                'is_blank': is_blank,
+                'is_start': bool(start_date and day == start_date.day and base_date.month == start_date.month and base_date.year == start_date.year),
+                'is_logged': bool(day and (day in logged_days_set)),
+                'is_today': is_today,
             }
             week_cells.append(cell)
         month_weeks.append(week_cells)

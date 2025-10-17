@@ -557,6 +557,237 @@
             color: #0f172a;
         }
         .table tbody tr:hover { background: #f8fafc; }
+        
+        /* Health Insights */
+        .insight-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+        .insight-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .insight-text {
+            font-size: 0.95rem;
+            opacity: 0.95;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Icon chip for section titles */
+        .form-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        /* Enhanced Dashboard Styles */
+        .dashboard-widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .widget {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .widget:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .widget-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .widget-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .widget-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            opacity: 0.2;
+            transform: scale(1.2);
+            z-index: -1;
+        }
+
+        /* Progress Ring Styles */
+        .progress-ring-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .progress-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--progress-color, #667eea) 0deg var(--progress-angle, 0deg), #e2e8f0 var(--progress-angle, 0deg) 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .progress-circle::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-text {
+            position: absolute;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--progress-color, #667eea);
+            z-index: 2;
+        }
+
+        .progress-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .progress-info p {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-action {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .quick-action:hover::before { left: 100%; }
+        .quick-action:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .quick-action-title { font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
+        .quick-action-desc { font-size: 0.85rem; color: #64748b; }
     </style>
     
 </head>
@@ -577,7 +808,7 @@
     <main class="main-content">
         <div class="welcome-banner reveal">
             <div class="welcome-content">
-                <h1 class="animated-gradient-text">Welcome back, <span class="highlight">{{ request.user.first_name|default:request.user.username }}!</span></h1>
+                <h1 class="animated-gradient-text">Welcome back, <span class="highlight">{{ request.user.get_full_name|default:request.user.username }}!</span></h1>
                 <p id="subtitleType">Track your progress and stay on top of your health goals</p>
             </div>
         </div>
@@ -590,29 +821,125 @@
         </div>
         {% endif %}
 
-        <div class="stats-grid">
-            <div class="stat-card tiltable reveal {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}complete{% else %}incomplete{% endif %}">
-                <div class="stat-header">
-                    <div>
-                        <h4>Profile Status</h4>
-                        {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}
-                            <div class="stat-value">Complete</div>
-                            <div class="stat-label">All key details provided</div>
-                        {% else %}
-                            <div class="stat-value">Incomplete</div>
-                            <div class="stat-label">Please complete your profile</div>
-                        {% endif %}
+        <!-- Quick Actions Section -->
+        <div class="quick-actions">
+            <a href="{% url 'logs' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"></path>
+                        <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                    </svg>
+                </div>
+                <div class="quick-action-title">View Logs</div>
+                <div class="quick-action-desc">Track your daily progress</div>
+            </a>
+            <a href="{% url 'complete_profile' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="quick-action-title">Update Profile</div>
+                <div class="quick-action-desc">Manage your health data</div>
+            </a>
+            <a href="{% url 'tips_list' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="quick-action-title">Health Tips</div>
+                <div class="quick-action-desc">Get expert advice</div>
+            </a>
+            <a href="{% url 'doctor' %}" class="quick-action">
+                <div class="quick-action-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="quick-action-title">Find Doctors</div>
+                <div class="quick-action-desc">Connect with professionals</div>
+            </a>
+        </div>
+
+        <!-- Enhanced Dashboard Widgets -->
+        <div class="dashboard-widgets">
+            <!-- Profile Status Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        Profile Status
+                    </div>
+                </div>
+                <div class="progress-ring-container">
+                    <div class="progress-ring">
+                        <div class="progress-circle" style="--progress-color: {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}#10b981{% else %}#ef4444{% endif %}; --progress-angle: {% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}360deg{% else %}180deg{% endif %};">
+                            <div class="progress-text">{% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}100%{% else %}50%{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <h4>{% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}Complete{% else %}Incomplete{% endif %}</h4>
+                        <p>{% if request.user.profile.age and request.user.profile.height and request.user.profile.current_weight and request.user.profile.gender and request.user.profile.goal %}All key details provided{% else %}Please complete your profile{% endif %}</p>
                     </div>
                 </div>
             </div>
 
             {% if request.user.profile and request.user.profile.age and request.user.profile.height and request.user.profile.current_weight %}
-            <div class="stat-card bmi tiltable reveal">
-                <div class="stat-header">
-                    <div>
-                        <h4>Body Mass Index</h4>
-                        <div class="stat-value" data-countup>{{ request.user.profile.bmi|floatformat:1 }}</div>
-                        <div class="stat-label">Based on your profile</div>
+            <!-- BMI Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <!-- Calculator SVG Icon -->
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="2" width="18" height="20" rx="2" ry="2"></rect>
+                                <rect x="7" y="6" width="10" height="3"></rect>
+                                <line x1="7" y1="11" x2="9" y2="11"></line>
+                                <line x1="11" y1="11" x2="13" y2="11"></line>
+                                <line x1="15" y1="11" x2="17" y2="11"></line>
+                                <line x1="7" y1="15" x2="9" y2="15"></line>
+                                <line x1="11" y1="15" x2="13" y2="15"></line>
+                                <line x1="15" y1="15" x2="17" y2="15"></line>
+                            </svg>
+                        </div>
+                        Body Mass Index
+                    </div>
+                </div>
+                <div class="progress-ring-container">
+                    <div class="progress-ring">
+                        {% with bmi_val=request.user.profile.bmi %}
+                        {% if bmi_val and bmi_val < 18.5 %}
+                        <div class="progress-circle" style="--progress-color: #4aa3f0; --progress-angle: 270deg;">
+                            <div class="progress-text" data-countup>{{ bmi_val|floatformat:1 }}</div>
+                        </div>
+                        {% elif bmi_val and bmi_val < 25 %}
+                        <div class="progress-circle" style="--progress-color: #32d296; --progress-angle: 270deg;">
+                            <div class="progress-text" data-countup>{{ bmi_val|floatformat:1 }}</div>
+                        </div>
+                        {% elif bmi_val and bmi_val < 30 %}
+                        <div class="progress-circle" style="--progress-color: #f5a623; --progress-angle: 270deg;">
+                            <div class="progress-text" data-countup>{{ bmi_val|floatformat:1 }}</div>
+                        </div>
+                        {% else %}
+                        <div class="progress-circle" style="--progress-color: #e74c3c; --progress-angle: 270deg;">
+                            <div class="progress-text" data-countup>{{ bmi_val|default:0|floatformat:1 }}</div>
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div class="progress-info">
+                        <h4>BMI Score</h4>
+                        <p>Based on your profile</p>
                     </div>
                 </div>
                 <!-- BMI Meter -->
@@ -678,54 +1005,106 @@
             {% endif %}
 
             {% if request.user.profile.goal %}
-            <div class="stat-card goal tiltable reveal">
-                <div class="stat-header">
-                    <div>
-                        <h4>Current Goal</h4>
-                        <div class="stat-value">{{ request.user.profile.get_goal_display }}</div>
-                        <div class="stat-label">Primary objective</div>
+            <!-- Goal Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="6"></circle>
+                                <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                        </div>
+                        Current Goal
                     </div>
+                </div>
+                <div class="progress-info">
+                    <h4>{{ request.user.profile.get_goal_display }}</h4>
+                    <p>Primary objective</p>
                 </div>
             </div>
             {% endif %}
 
             {% if calories is not None %}
-            <div class="stat-card calories tiltable reveal">
-                <div class="stat-header">
-                    <div>
-                        <h4>Daily Calories</h4>
-                        <div class="stat-value" data-countup>{{ calories }}</div>
-                        <div class="stat-label">Recommended intake</div>
+            <!-- Calories Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                            </svg>
+                        </div>
+                        Daily Calories
+                    </div>
+                </div>
+                <div class="progress-ring-container">
+                    <div class="progress-ring">
+                        <div class="progress-circle" style="--progress-color: #f59e0b; --progress-angle: 180deg;">
+                            <div class="progress-text" data-countup>{{ calories }}</div>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <h4>Calorie Target</h4>
+                        <p>Recommended intake</p>
+                    </div>
+                </div>
+                <!-- Mini Chart -->
+                <div class="mini-chart" style="height: 60px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 8px; position: relative; overflow: hidden; margin: 1rem 0;">
+                    <div class="chart-bars" style="display: flex; align-items: end; height: 100%; padding: 8px; gap: 2px;">
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 20px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 35px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 25px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 40px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 30px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 45px;"></div>
+                        <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 35px;"></div>
                     </div>
                 </div>
             </div>
             {% endif %}
 
             {% if sleep_recommendation %}
-            <div class="stat-card sleep tiltable reveal">
-                <div class="stat-header">
-                    <div>
-                        <h4>Sleep Target</h4>
-                        <div class="stat-value">{{ sleep_recommendation }}</div>
-                        <div class="stat-label">Nightly recommendation</div>
+            <!-- Sleep Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.91.37 4.15 1.02L21 2v10z"></path>
+                                <path d="M12 2v10l4.15-4.15C15.09 6.37 13.5 6 12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V2z"></path>
+                            </svg>
+                        </div>
+                        Sleep Target
                     </div>
+                </div>
+                <div class="progress-info">
+                    <h4>Sleep Goal</h4>
+                    <p>{{ sleep_recommendation }}</p>
                 </div>
             </div>
             {% endif %}
 
             {% if goal_weeks or goal_months %}
-            <div class="stat-card goal tiltable reveal">
-                <div class="stat-header">
-                    <div>
-                        <h4>Goal Timeline</h4>
-                        {% if goal_weeks and goal_weeks != 'Already at target weight' %}
-                            <div class="stat-value" data-countup>{{ goal_weeks }}</div>
-                            <div class="stat-label">weeks (≈ {{ goal_months }} months)</div>
-                        {% else %}
-                            <div class="stat-value">{{ goal_weeks }}</div>
-                            <div class="stat-label">Stay consistent to maintain</div>
-                        {% endif %}
+            <!-- Timeline Widget -->
+            <div class="widget tiltable reveal">
+                <div class="widget-header">
+                    <div class="widget-title">
+                        <div class="widget-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        Goal Timeline
                     </div>
+                </div>
+                <div class="progress-info">
+                    <h4>Timeline</h4>
+                    <p>{% if goal_weeks and goal_weeks != 'Already at target weight' %}{{ goal_weeks }} weeks (≈ {{ goal_months }} months){% else %}Stay consistent to maintain{% endif %}</p>
                 </div>
             </div>
             {% endif %}
@@ -735,7 +1114,19 @@
 
         <div class="card">
             <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>Daily Tracking</span>
+                <span style="display:flex; align-items:center; gap:.5rem;">
+                    <span class="form-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                            <line x1="8" y1="14" x2="12" y2="14"></line>
+                            <line x1="8" y1="18" x2="12" y2="18"></line>
+                        </svg>
+                    </span>
+                    Daily Tracking
+                </span>
                 <a href="{% url 'logs' %}" class="btn btn-primary btn-sm">View Logs</a>
             </div>
             <p class="muted" style="margin-bottom:1rem;">Log your calories, sleep, and exercise for any day.</p>
@@ -798,6 +1189,8 @@
             </div>
             {% endif %}
         </div>
+        
+
     </main>
     <script>
     (function(){
@@ -872,16 +1265,38 @@
                 if (!Number.isNaN(target)) animateCount(el, target);
             });
         };
+        // Progress ring animations and chart bars
+        const animateProgressRings = () => {
+            document.querySelectorAll('.progress-circle').forEach(ring => {
+                const angle = ring.style.getPropertyValue('--progress-angle');
+                if (angle) {
+                    ring.style.setProperty('--progress-angle', '0deg');
+                    setTimeout(() => {
+                        ring.style.setProperty('--progress-angle', angle);
+                    }, 100);
+                }
+            });
+        };
+        const animateChartBars = () => {
+            document.querySelectorAll('.chart-bar').forEach((bar, index) => {
+                bar.style.height = '0px';
+                setTimeout(() => {
+                    bar.style.height = bar.style.getPropertyValue('--bar-height') || '20px';
+                }, index * 100);
+            });
+        };
         // Run when visible
         let ran = false;
         const tryRun = () => {
             if (ran) return;
-            const first = document.querySelector('[data-countup]');
+            const first = document.querySelector('[data-countup]') || document.querySelector('.progress-circle');
             if (!first) return;
             const rect = first.getBoundingClientRect();
             if (rect.top < window.innerHeight) {
                 ran = true;
                 runCountUps();
+                setTimeout(animateProgressRings, 200);
+                setTimeout(animateChartBars, 400);
             }
         };
         window.addEventListener('scroll', tryRun);
