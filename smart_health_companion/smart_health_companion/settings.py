@@ -130,7 +130,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 
 # OpenAI Configuration
 import os
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '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')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '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')
 OPENAI_BASE_URL = os.getenv('OPENAI_BASE_URL', 'https://openrouter.ai/api/v1')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'openai/gpt-oss-20b:free')
 
