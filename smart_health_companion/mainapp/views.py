@@ -213,7 +213,7 @@ def dashboard_view(request, username=None):
             exercise_minutes = log_form.cleaned_data['exercise_minutes']
 
             # Create or update the log for this user and date
-            DailyLog.objects.update_or_create(
+            log, created = DailyLog.objects.update_or_create(
                 user=request.user,
                 date=date,
                 defaults={
@@ -222,6 +222,11 @@ def dashboard_view(request, username=None):
                     'exercise_minutes': exercise_minutes,
                 }
             )
+            # Add success message
+            if created:
+                messages.success(request, f"Daily log created for {date}")
+            else:
+                messages.success(request, f"Daily log updated for {date}")
             # Set start tracking date on first submission
             try:
                 profile = request.user.profile
@@ -274,6 +279,9 @@ def dashboard_view(request, username=None):
             except Exception:
                 pass  # Don't break logging flow
             return redirect('dashboard_username', username=request.user.username)
+        else:
+            # Form is not valid, show errors
+            messages.error(request, "Please correct the errors below.")
     else:
         log_form = DailyLogForm()
 
@@ -479,12 +487,16 @@ def forgot_password_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
         try:
-            user = User.objects.get(email=email)
-            send_otp_email(user)
-            messages.success(request, "OTP sent to your email.")
-            return redirect("verify_otp", user_id=user.id)
-        except User.DoesNotExist:
-            messages.error(request, "No user found with that email.")
+            # Use filter().first() to handle potential duplicate emails gracefully
+            user = User.objects.filter(email=email).first()
+            if user:
+                send_otp_email(user)
+                messages.success(request, "OTP sent to your email.")
+                return redirect("verify_otp", user_id=user.id)
+            else:
+                messages.error(request, "No user found with that email.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
     return render(request, "mainapp/forgot_password.html")
 
 from django.contrib.auth.hashers import make_password

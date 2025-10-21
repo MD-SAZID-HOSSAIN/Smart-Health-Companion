@@ -71,7 +71,44 @@
         .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
         .badge { display: inline-block; padding: 4px 10px; font-size: 12px; border-radius: 999px; background: #eef2ff; color: #3730a3; margin-bottom: 10px; font-weight: 600; }
         .title { font-size: 1.2rem; margin: 0 0 8px; color: #1e293b; }
-        .summary { color: #4b5563; font-size: 0.95rem; line-height: 1.7; }
+        .summary { color: #4b5563; font-size: 0.95rem; line-height: 1.7; margin-bottom: 8px; }
+        .content-preview { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-top: 8px; }
+        .content-preview p { margin: 0 0 8px; }
+        .content-preview p:last-child { margin-bottom: 0; }
+        .card-actions { margin-top: 12px; text-align: center; }
+        .read-more-btn { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        .read-more-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); 
+        }
+        .read-more-btn i { 
+            transition: transform 0.3s ease; 
+        }
+        .read-more-btn.expanded i { 
+            transform: rotate(180deg); 
+        }
+        .full-content { 
+            color: #4b5563; 
+            font-size: 0.9rem; 
+            line-height: 1.6; 
+            margin-top: 12px; 
+            padding-top: 12px; 
+            border-top: 1px solid #e5e7eb; 
+        }
+        .full-content p { margin: 0 0 12px; }
+        .full-content p:last-child { margin-bottom: 0; }
         .empty { text-align: center; color: #6b7280; padding: 64px 0; }
 
         @keyframes fadeIn {
@@ -155,7 +192,7 @@
 
             <div class="grid" id="tipsGrid">
                 {% for tip in tips %}
-                    <div class="card" data-category="{{ tip.category }}" data-title="{{ tip.title|lower }}" data-summary="{{ tip.summary|default:''|striptags|lower }}" data-content="{{ tip.content|striptags|lower }}">
+                    <div class="card" data-category="{{ tip.category }}" data-title="{{ tip.title|lower }}" data-summary="{{ tip.summary|default:''|striptags|lower }}" data-content="{{ tip.content|striptags|lower }}" data-preview="{{ tip.content|truncatewords:30|striptags|lower }}">
                         {% if tip.image %}
                             <img src="{{ tip.image.url }}" alt="{{ tip.title }}">
                         {% endif %}
@@ -163,8 +200,20 @@
                         <h2 class="title">{{ tip.title }}</h2>
                         {% if tip.summary %}
                             <p class="summary">{{ tip.summary }}</p>
-                        {% else %}
-                            <p class="summary">{{ tip.content|linebreaks }}</p>
+                        {% endif %}
+                        <div class="content-preview">
+                            {{ tip.content|truncatewords:30|linebreaks }}
+                        </div>
+                        {% if tip.content|wordcount > 30 %}
+                        <div class="card-actions">
+                            <button class="read-more-btn" onclick="toggleContent(this)">
+                                <span class="read-more-text">Read More</span>
+                                <i class="fa fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="full-content" style="display: none;">
+                            {{ tip.content|linebreaks }}
+                        </div>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -252,7 +301,8 @@
                     const title = card.getAttribute('data-title') || '';
                     const summary = card.getAttribute('data-summary') || '';
                     const content = card.getAttribute('data-content') || '';
-                    const text = summary || content;
+                    const preview = card.getAttribute('data-preview') || '';
+                    const text = summary + ' ' + preview;
                     const matchesCategory = (activeCategory === 'all') || (category === activeCategory);
                     const matchesQuery = !q || title.includes(q) || text.includes(q);
                     const show = matchesCategory && matchesQuery;
@@ -278,6 +328,24 @@
 
             applyFilters();
         })();
+
+        // Toggle content functionality
+        function toggleContent(button) {
+            const card = button.closest('.card');
+            const fullContent = card.querySelector('.full-content');
+            const readMoreText = button.querySelector('.read-more-text');
+            const isExpanded = fullContent.style.display !== 'none';
+            
+            if (isExpanded) {
+                fullContent.style.display = 'none';
+                readMoreText.textContent = 'Read More';
+                button.classList.remove('expanded');
+            } else {
+                fullContent.style.display = 'block';
+                readMoreText.textContent = 'Read Less';
+                button.classList.add('expanded');
+            }
+        }
     </script>
 </body>
 </html>
