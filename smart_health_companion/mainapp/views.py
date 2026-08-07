@@ -220,6 +220,7 @@ def dashboard_view(request, username=None):
                     'calories': calories_val,
                     'sleep_hours': sleep_hours,
                     'exercise_minutes': exercise_minutes,
+                    'is_ai_estimated': False,
                 }
             )
             # Add success message
@@ -519,4 +520,144 @@ def verify_otp_view(request, user_id):
         except PasswordResetOTP.DoesNotExist:
             messages.error(request, "Invalid OTP.")
     return render(request, "mainapp/verify_otp.html")
+
+
+# ---------------------------------------------------------------------------
+# Food Photo Calorie Scanner
+# ---------------------------------------------------------------------------
+import json
+from .forms import FoodPhotoForm
+from .food_calories import FOOD_CALORIES, DISPLAY_NAMES
+
+
+def _predict_food(image_file):
+    """
+    Run EfficientNet-B0 inference on an uploaded image.
+    Returns (predicted_class_name, confidence_pct, all_classes_list).
+    """
+    import torch
+    from torchvision import transforms
+    from PIL import Image
+    from mainapp.apps import food_model, food_class_names
+
+    if food_model is None or food_class_names is None:
+        raise RuntimeError("Food recognition model is not loaded.")
+
+    # Preprocessing must match training pipeline
+    preprocess = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225],
+        ),
+    ])
+
+    img = Image.open(image_file).convert('RGB')
+    tensor = preprocess(img).unsqueeze(0)  # (1, 3, 224, 224)
+
+    with torch.no_grad():
+        outputs = food_model(tensor)
+        probs = torch.nn.functional.softmax(outputs, dim=1)[0]
+        confidence, idx = torch.max(probs, dim=0)
+
+    predicted_class = food_class_names[idx.item()]
+    confidence_pct = round(confidence.item() * 100, 1)
+    return predicted_class, confidence_pct, list(food_class_names)
+
+
+@login_required
+def food_calorie_view(request):
+    """AJAX endpoint: accept food photo + weight, return prediction & calories."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    form = FoodPhotoForm(request.POST, request.FILES)
+    if not form.is_valid():
+        return JsonResponse({'error': form.errors}, status=400)
+
+    weight_grams = form.cleaned_data['weight_grams']
+    image_file = form.cleaned_data['image']
+
+    try:
+        predicted_class, confidence_pct, all_classes = _predict_food(image_file)
+    except Exception as e:
+        return JsonResponse({'error': f'Prediction failed: {str(e)}'}, status=500)
+
+    # Build calorie lookup for all classes (sent for low-confidence fallback)
+    all_dishes = [
+        {
+            'name': name,
+            'display_name': DISPLAY_NAMES.get(name, name),
+            'cal_per_100g': FOOD_CALORIES.get(name, 0),
+        }
+        for name in all_classes
+    ]
+
+    if confidence_pct >= 60:
+        cal_per_100g = FOOD_CALORIES.get(predicted_class, 0)
+        estimated_calories = round((cal_per_100g / 100) * weight_grams)
+        return JsonResponse({
+            'low_confidence': False,
+            'predicted_class': predicted_class,
+            'predicted_display_name': DISPLAY_NAMES.get(predicted_class, predicted_class),
+            'confidence': confidence_pct,
+            'cal_per_100g': cal_per_100g,
+            'weight_grams': weight_grams,
+            'estimated_calories': estimated_calories,
+            'all_dishes': all_dishes,
+        })
+    else:
+        return JsonResponse({
+            'low_confidence': True,
+            'predicted_class': predicted_class,
+            'predicted_display_name': DISPLAY_NAMES.get(predicted_class, predicted_class),
+            'confidence': confidence_pct,
+            'weight_grams': weight_grams,
+            'all_dishes': all_dishes,
+        })
+
+
+@login_required
+def food_calorie_save_view(request):
+    """AJAX endpoint: save AI-estimated calories to today's DailyLog."""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        calories = int(data.get('calories', 0))
+        target_date = data.get('date')
+        if target_date:
+            from datetime import datetime as dt
+            target_date = dt.strptime(target_date, '%Y-%m-%d').date()
+        else:
+            target_date = dt_date.today()
+    except (ValueError, TypeError, json.JSONDecodeError) as e:
+        return JsonResponse({'error': f'Invalid data: {str(e)}'}, status=400)
+
+    if calories <= 0:
+        return JsonResponse({'error': 'Calories must be positive'}, status=400)
+
+    # Create or update the DailyLog for this user + date
+    log, _ = DailyLog.objects.get_or_create(user=request.user, date=target_date)
+    log.calories = log.calories + calories
+    log.is_ai_estimated = True
+    log.save()
+
+    # Set start tracking date if first entry
+    try:
+        profile = request.user.profile
+        if not profile.start_tracking_date:
+            profile.start_tracking_date = target_date
+            profile.save(update_fields=["start_tracking_date"])
+    except Exception:
+        pass
+
+    return JsonResponse({
+        'success': True,
+        'date': str(target_date),
+        'total_calories': log.calories,
+        'message': f'Added {calories} kcal to {target_date} log'
+    })
 

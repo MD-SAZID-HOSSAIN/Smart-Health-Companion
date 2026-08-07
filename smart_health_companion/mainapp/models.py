@@ -129,6 +129,7 @@ class DailyLog(models.Model):
     calories = models.IntegerField(default=0)
     sleep_hours = models.DecimalField(max_digits=4, decimal_places=1, default=0)
     exercise_minutes = models.IntegerField(default=0)
+    is_ai_estimated = models.BooleanField(default=False, help_text='Whether calories were estimated by AI food recognition')
 
     class Meta:
         ordering = ['-date']

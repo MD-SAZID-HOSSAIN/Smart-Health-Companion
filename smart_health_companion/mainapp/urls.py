@@ -16,6 +16,8 @@ urlpatterns = [
     path("logs/", views.logs_view, name="logs"),
     path('forgot-password/', views.forgot_password_view, name='forgot_password'),
     path('verify-otp/<int:user_id>/', views.verify_otp_view, name='verify_otp'),
+    path('food-calorie/', views.food_calorie_view, name='food_calorie'),
+    path('food-calorie/save/', views.food_calorie_save_view, name='food_calorie_save'),
     
 ]
 

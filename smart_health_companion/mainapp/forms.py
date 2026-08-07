@@ -178,3 +178,17 @@ class DailyLogForm(forms.ModelForm):
         model = DailyLog
         fields = ['date', 'calories', 'sleep_hours', 'exercise_minutes']
 
+
+class FoodPhotoForm(forms.Form):
+    """Form for the food photo calorie scanner."""
+    image = forms.ImageField(
+        required=True,
+        help_text="Upload a photo of your food"
+    )
+    weight_grams = forms.FloatField(
+        required=True,
+        min_value=1,
+        help_text="Enter the weight of the food in grams"
+    )
+
+
