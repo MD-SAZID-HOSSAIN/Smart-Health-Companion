@@ -1,431 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Smart Health Companion</title>
     {% load static %}
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* fitness-themed animated background accents */
-        .fitness-decor {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .pulse-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
-            filter: blur(0.3px);
-            animation: float 12s ease-in-out infinite;
-        }
-
-        .pulse-circle.small { width: 80px; height: 80px; }
-        .pulse-circle.mid { width: 140px; height: 140px; }
-        .pulse-circle.big { width: 220px; height: 220px; }
-
-        .pulse-circle.c1 { top: 8%; left: 6%; animation-delay: 0s; }
-        .pulse-circle.c2 { top: 70%; left: 10%; animation-delay: 2s; }
-        .pulse-circle.c3 { top: 15%; right: 8%; animation-delay: 1s; }
-        .pulse-circle.c4 { bottom: 10%; right: 12%; animation-delay: 3s; }
-        .pulse-circle.c5 { bottom: 35%; left: 45%; animation-delay: 1.5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.7; }
-            50% { transform: translateY(-20px) translateX(10px) scale(1.05); opacity: 1; }
-        }
-
-        /* subtle diagonal fitness stripes */
-        .fitness-decor::after {
-            content: '';
-            position: absolute;
-            inset: -50% -50% -50% -50%;
-            background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 8px, rgba(255,255,255,0.01) 8px 24px);
-            transform: rotate(0.001deg);
-        }
-
-        /* heartbeat line at the bottom */
-        .heartbeat-wrap {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 120px;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 1;
-        }
-
-        /* subtle dark-to-transparent gradient behind ECG for contrast */
-        .heartbeat-wrap::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.28), rgba(0,0,0,0));
-            pointer-events: none;
-        }
-
-        .heartbeat {
-            width: 100%;
-            height: 100%;
-        }
-
-        .heartbeat path {
-            stroke: rgba(255,255,255,0.98);
-            stroke-width: 3.5;
-            fill: none;
-            stroke-dasharray: 10 8;
-            animation: dash 3s linear infinite;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.6)) drop-shadow(0 0 20px rgba(118,75,162,0.45));
-        }
-
-        @keyframes dash {
-            to { stroke-dashoffset: -200; }
-        }
-
-        /* faint watermark heart logo for brand feel */
-        body::after {
-            content: '';
-            position: fixed;
-            right: -40px;
-            top: 10%;
-            width: 320px;
-            height: 320px;
-            background: url('{% static "heart logo.png" %}') no-repeat center/contain;
-            opacity: 0.06;
-            z-index: 1;
-            transform: rotate(-15deg);
-            pointer-events: none;
-            filter: blur(0.2px);
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: slideUp 0.8s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 300;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            width: 170px;
-            height: auto;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .error-message {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e6ed;
-            border-radius: 12px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
-            background: white;
-        }
-
-        .form-group input:hover, .form-group select:hover {
-            border-color: #bdc3c7;
-            transform: translateY(-1px);
-        }
-
-        .errorlist {
-            color: #e74c3c;
-            font-size: 13px;
-            margin-top: 8px;
-            list-style: none;
-            padding: 0;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .submit-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #e0e6ed;
-        }
-
-        .login-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .login-link a:hover {
-            color: #764ba2;
-        }
-
-        .login-link a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-
-        .login-link a:hover::after {
-            width: 100%;
-        }
-
-        
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 30px;
-            }
-            
-            h2 {
-                font-size: 2em;
-            }
-        }
-
-        .home-btn {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            border: 2px solid #667eea;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .home-btn:hover {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
 </head>
 <body>
-
-
-    <div class="fitness-decor" aria-hidden="true">
-        <span class="pulse-circle small c1"></span>
-        <span class="pulse-circle mid c2"></span>
-        <span class="pulse-circle big c3"></span>
-        <span class="pulse-circle small c4"></span>
-        <span class="pulse-circle mid c5"></span>
-    </div>
-
-    <div class="heartbeat-wrap" aria-hidden="true">
-        <svg class="heartbeat" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <!-- stylized ECG line -->
-            <path d="M0,60 C60,60 80,60 120,60 C180,60 190,60 230,60 C250,60 260,45 270,60 C280,75 290,100 305,60 C315,35 330,10 345,60 C360,110 375,75 395,60 C430,35 450,60 500,60 C540,60 560,60 600,60 C640,60 650,60 680,60 C700,60 710,45 720,60 C730,75 740,100 755,60 C765,35 780,10 795,60 C810,110 825,75 845,60 C880,35 900,60 950,60 C990,60 1010,60 1050,60 C1090,60 1130,60 1200,60" />
-        </svg>
-    </div>
-
-    <div class="container">
-        <div class="logo-container">
-            <img src="{% static 'smart-health-companion-logo.png' %}" alt="Smart Health Companion Logo" class="logo">
+    <div class="auth-shell">
+        <div class="auth-grid-texture"></div>
+        <div class="auth-pulse-wrap">
+            <svg viewBox="0 0 1180 90" preserveAspectRatio="none">
+                <path class="auth-pulse-path" d="M0,45 L420,45 L448,45 L462,14 L478,76 L494,45 L520,45 L536,30 L552,45 L1180,45" />
+            </svg>
         </div>
-        <h2>Create Account</h2>
 
-        {% if errors %}
-            <div class="error-message">{{ errors }}</div>
-        {% endif %}
-
-        {% if form.non_field_errors %}
-            <div class="error-message">
-                {% for error in form.non_field_errors %}
-                    <div>{{ error }}</div>
-                {% endfor %}
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="{% static 'heart logo.png' %}" alt="Smart Health Companion">
             </div>
-        {% endif %}
 
-        {% if form.errors %}
-            <div class="error-message">
-                <strong>Please correct the following errors:</strong>
-                <ul style="margin-top: 10px; text-align: left;">
-                    {% for field, errors in form.errors.items %}
-                        {% for error in errors %}
-                            <li>{{ field|title }}: {{ error }}</li>
-                        {% endfor %}
+            <h2>Create Account</h2>
+            <p class="auth-subtext">Join Smart Health Companion and start your journey.</p>
+
+            {% if errors %}
+                <div class="alert alert-error">{{ errors }}</div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
                     {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-
-        <form method="POST">
-            {% csrf_token %}
-
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <ul class="errorlist">
-                            {% for error in field.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if field.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ field.help_text }}</small>
-                    {% endif %}
                 </div>
-            {% endfor %}
+            {% endif %}
 
-            <button type="submit" class="submit-btn">Create Account</button>
-        </form>
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    <strong>Please correct the following errors:</strong>
+                    <ul style="margin-top: 10px; text-align: left; padding-left: 1.2rem;">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|title }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-        <div class="login-link">
-            <p>Already have an account? <a href="{% url 'login' %}">Login Here</a></p>
-            <p style="margin-top: 10px;"><a class="home-btn" href="{% url 'home' %}">Back to Home</a></p>
+            <form method="POST">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <ul class="errorlist">
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small>{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                <p><a class="back-home" href="{% url 'home' %}">← Back to Home</a></p>
+            </div>
         </div>
     </div>
-
-    
 </body>
 </html>
-

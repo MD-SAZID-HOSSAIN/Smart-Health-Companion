@@ -1,491 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Your Profile - Smart Health Companion</title>
     {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 700px;
-            margin: 50px auto;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: slideUp 0.8s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 300;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .logo {
-            width: 200px;
-            height: auto;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .error-message {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e0e6ed;
-            border-radius: 12px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
-            background: white;
-        }
-
-        .form-group input:hover, .form-group select:hover, .form-group textarea:hover {
-            border-color: #bdc3c7;
-            transform: translateY(-1px);
-        }
-
-        /* Health Problems Checkbox Styling */
-        .form-group ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
+        .form-group ul { list-style: none; padding: 0; margin: 0; }
         .form-group li {
-            margin-bottom: 12px;
+            margin-bottom: 0.6rem;
             display: flex;
             align-items: center;
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 2px solid #e0e6ed;
-            border-radius: 10px;
-            transition: all 0.3s ease;
+            padding: 0.65rem 0.9rem;
+            background: var(--navy-3);
+            border: 1px solid var(--line-on-dark);
+            border-radius: 8px;
+            transition: all 0.25s ease;
         }
-
-        .form-group li:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-            transform: translateY(-1px);
-        }
-
+        .form-group li:hover { border-color: var(--coral); }
         .form-group input[type="checkbox"] {
             width: auto;
-            margin-right: 12px;
-            transform: scale(1.2);
-            accent-color: #667eea;
+            margin-right: 0.75rem;
+            transform: scale(1.15);
+            accent-color: var(--coral);
         }
-
-        .form-group input[type="checkbox"]:checked + label {
-            color: #667eea;
-            font-weight: 600;
-        }
-
         .form-group li:has(input[type="checkbox"]:checked) {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+            border-color: var(--coral);
+            background: rgba(255, 90, 78, 0.08);
         }
-
-        .errorlist {
-            color: #e74c3c;
-            font-size: 13px;
-            margin-top: 8px;
-            list-style: none;
-            padding: 0;
-            animation: fadeIn 0.3s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .submit-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 18px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 30px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid #e0e6ed;
-        }
-
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .back-link a:hover {
-            color: #764ba2;
-        }
-
-        .back-link a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -2px;
-            left: 0;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            transition: width 0.3s ease;
-        }
-
-        .back-link a:hover::after {
-            width: 100%;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                margin: 20px;
-                padding: 30px;
-            }
-            
-            h2 {
-                font-size: 2em;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-        }
+        .form-group li label { color: rgba(244, 247, 245, 0.85); font-family: 'IBM Plex Sans', sans-serif; font-size: 0.92rem; text-transform: none; letter-spacing: normal; margin: 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <img src="{% static 'smart-health-companion-logo.png' %}" alt="Smart Health Companion Logo" class="logo">
-        </div>
-        <h2>Complete Your Health Profile</h2>
-        
-        {% if errors %}
-            <div class="error-message">{{ errors }}</div>
-        {% endif %}
-        
-        {% if form.errors %}
-            <div class="error-message">
-                <strong>Please correct the following errors:</strong>
-                <ul style="margin-top: 10px; text-align: left;">
-                    {% for field, errors in form.errors.items %}
-                        {% for error in errors %}
-                            <li>{{ field|title }}: {{ error }}</li>
-                        {% endfor %}
-                    {% endfor %}
-                </ul>
+    <div class="auth-shell">
+        <div class="auth-grid-texture"></div>
+
+        <div class="auth-card auth-card-wide">
+            <div class="auth-logo">
+                <img src="{% static 'heart logo.png' %}" alt="Smart Health Companion">
             </div>
-        {% endif %}
-        
-        <form method="POST">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.age.id_for_label }}">{{ form.age.label }}</label>
-                    {{ form.age }}
-                    {% if form.age.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.age.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.age.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.age.help_text }}</small>
-                    {% endif %}
-                </div>
+            <h2>Complete Your Health Profile</h2>
+            <p class="auth-subtext">A few details so we can personalize your plan.</p>
 
-                <div class="form-group">
-                    <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
-                    {{ form.gender }}
-                    {% if form.gender.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.gender.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.gender.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.gender.help_text }}</small>
-                    {% endif %}
-                </div>
-            </div>
+            {% if errors %}
+                <div class="alert alert-error">{{ errors }}</div>
+            {% endif %}
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.height.id_for_label }}">{{ form.height.label }} (cm)</label>
-                    {{ form.height }}
-                    {% if form.height.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.height.errors %}
-                                <li>{{ error }}</li>
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    <strong>Please correct the following errors:</strong>
+                    <ul style="margin-top: 10px; text-align: left; padding-left: 1.2rem;">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|title }}: {{ error }}</li>
                             {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.height.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.height.help_text }}</small>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.current_weight.id_for_label }}">{{ form.current_weight.label }} (kg)</label>
-                    {{ form.current_weight }}
-                    {% if form.current_weight.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.current_weight.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.current_weight.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.current_weight.help_text }}</small>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="{{ form.target_weight.id_for_label }}">{{ form.target_weight.label }} (kg)</label>
-                    {{ form.target_weight }}
-                    {% if form.target_weight.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.target_weight.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.target_weight.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.target_weight.help_text }}</small>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.exercise_place.id_for_label }}">{{ form.exercise_place.label }}</label>
-                    {{ form.exercise_place }}
-                    {% if form.exercise_place.errors %}
-                        <ul class="errorlist">
-                            {% for error in form.exercise_place.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    {% if form.exercise_place.help_text %}
-                        <small style="color: #7f8c8d; font-style: italic;">{{ form.exercise_place.help_text }}</small>
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.activity_level.id_for_label }}">{{ form.activity_level.label }}</label>
-                {{ form.activity_level }}
-                {% if form.activity_level.errors %}
-                    <ul class="errorlist">
-                        {% for error in form.activity_level.errors %}
-                            <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
-                {% endif %}
-                {% if form.activity_level.help_text %}
-                    <small style="color: #7f8c8d; font-style: italic;">{{ form.activity_level.help_text }}</small>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
 
-            <div class="form-group">
-                <label for="{{ form.goal.id_for_label }}">{{ form.goal.label }}</label>
-                {{ form.goal }}
-                {% if form.goal.errors %}
-                    <ul class="errorlist">
-                        {% for error in form.goal.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {% if form.goal.help_text %}
-                    <small style="color: #7f8c8d; font-style: italic;">{{ form.goal.help_text }}</small>
-                {% endif %}
-            </div>
+            <form method="POST">
+                {% csrf_token %}
 
-            <div class="form-group">
-                <label for="{{ form.food_allergies.id_for_label }}">{{ form.food_allergies.label }} (Optional)</label>
-                {{ form.food_allergies }}
-                {% if form.food_allergies.errors %}
-                    <ul class="errorlist">
-                        {% for error in form.food_allergies.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {% if form.food_allergies.help_text %}
-                    <small style="color: #7f8c8d; font-style: italic;">{{ form.food_allergies.help_text }}</small>
-                {% endif %}
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.age.id_for_label }}">{{ form.age.label }}</label>
+                        {{ form.age }}
+                        {% if form.age.errors %}
+                            <ul class="errorlist">{% for error in form.age.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.age.help_text %}<small>{{ form.age.help_text }}</small>{% endif %}
+                    </div>
 
-            <div class="form-group">
-                <label for="{{ form.health_problems.id_for_label }}">Health Problems (Optional)</label>
-                {{ form.health_problems }}
-                {% if form.health_problems.errors %}
-                    <ul class="errorlist">
-                        {% for error in form.health_problems.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {% if form.health_problems.help_text %}
-                    <small style="color: #7f8c8d; font-style: italic;">{{ form.health_problems.help_text }}</small>
-                {% endif %}
-            </div>
+                    <div class="form-group">
+                        <label for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                        {{ form.gender }}
+                        {% if form.gender.errors %}
+                            <ul class="errorlist">{% for error in form.gender.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.gender.help_text %}<small>{{ form.gender.help_text }}</small>{% endif %}
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="{{ form.other_health_problems.id_for_label }}">If Other, please specify (Optional)</label>
-                {{ form.other_health_problems }}
-                {% if form.other_health_problems.errors %}
-                    <ul class="errorlist">
-                        {% for error in form.other_health_problems.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                {% if form.other_health_problems.help_text %}
-                    <small style="color: #7f8c8d; font-style: italic;">{{ form.other_health_problems.help_text }}</small>
-                {% endif %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.height.id_for_label }}">{{ form.height.label }} (cm)</label>
+                        {{ form.height }}
+                        {% if form.height.errors %}
+                            <ul class="errorlist">{% for error in form.height.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.height.help_text %}<small>{{ form.height.help_text }}</small>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.current_weight.id_for_label }}">{{ form.current_weight.label }} (kg)</label>
+                        {{ form.current_weight }}
+                        {% if form.current_weight.errors %}
+                            <ul class="errorlist">{% for error in form.current_weight.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.current_weight.help_text %}<small>{{ form.current_weight.help_text }}</small>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.target_weight.id_for_label }}">{{ form.target_weight.label }} (kg)</label>
+                        {{ form.target_weight }}
+                        {% if form.target_weight.errors %}
+                            <ul class="errorlist">{% for error in form.target_weight.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.target_weight.help_text %}<small>{{ form.target_weight.help_text }}</small>{% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.exercise_place.id_for_label }}">{{ form.exercise_place.label }}</label>
+                        {{ form.exercise_place }}
+                        {% if form.exercise_place.errors %}
+                            <ul class="errorlist">{% for error in form.exercise_place.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% endif %}
+                        {% if form.exercise_place.help_text %}<small>{{ form.exercise_place.help_text }}</small>{% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.activity_level.id_for_label }}">{{ form.activity_level.label }}</label>
+                    {{ form.activity_level }}
+                    {% if form.activity_level.errors %}
+                        <ul class="errorlist">{% for error in form.activity_level.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                    {% if form.activity_level.help_text %}<small>{{ form.activity_level.help_text }}</small>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.goal.id_for_label }}">{{ form.goal.label }}</label>
+                    {{ form.goal }}
+                    {% if form.goal.errors %}
+                        <ul class="errorlist">{% for error in form.goal.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                    {% if form.goal.help_text %}<small>{{ form.goal.help_text }}</small>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.food_allergies.id_for_label }}">{{ form.food_allergies.label }} (Optional)</label>
+                    {{ form.food_allergies }}
+                    {% if form.food_allergies.errors %}
+                        <ul class="errorlist">{% for error in form.food_allergies.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                    {% if form.food_allergies.help_text %}<small>{{ form.food_allergies.help_text }}</small>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.health_problems.id_for_label }}">Health Problems (Optional)</label>
+                    {{ form.health_problems }}
+                    {% if form.health_problems.errors %}
+                        <ul class="errorlist">{% for error in form.health_problems.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                    {% if form.health_problems.help_text %}<small>{{ form.health_problems.help_text }}</small>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.other_health_problems.id_for_label }}">If Other, please specify (Optional)</label>
+                    {{ form.other_health_problems }}
+                    {% if form.other_health_problems.errors %}
+                        <ul class="errorlist">{% for error in form.other_health_problems.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
+                    {% if form.other_health_problems.help_text %}<small>{{ form.other_health_problems.help_text }}</small>{% endif %}
+                </div>
+
+                <button type="submit" class="submit-btn">Complete Profile</button>
+            </form>
+
+            <div class="auth-links">
+                <p><a href="{% url 'dashboard' %}">← Back to Dashboard</a></p>
             </div>
-            
-            <button type="submit" class="submit-btn">Complete Profile</button>
-        </form>
-        
-        <div class="back-link">
-            <p><a href="{% url 'dashboard' %}">← Back to Dashboard</a></p>
         </div>
     </div>
 </body>

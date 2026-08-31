@@ -5,69 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Logs - Smart Health Companion</title>
     {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background:#f1f5f9; margin:0; color:#0f172a; }
-        .header { background:white; box-shadow: 0 2px 20px rgba(0,0,0,.08); }
-        .nav { max-width: 1200px; margin: 0 auto; padding: 1rem 2rem; display:flex; align-items:center; justify-content:space-between; }
-        .logo { font-weight:800; font-size:1.2rem; color:#111827; display:flex; gap:.5rem; align-items:center; }
-        .logo img { width: 36px; height:auto; }
+        body { background: var(--paper-2); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .card { background:white; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); padding:1.5rem; }
-        .title-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; }
-        .title { font-size:1.4rem; font-weight:700; }
-        .muted { color:#64748b; }
-        .btn { padding:.6rem 1rem; border:none; border-radius:10px; text-decoration:none; font-weight:600; cursor:pointer; }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; }
-        .btn-outline { background:transparent; border:2px solid #e11d48; color:#e11d48; }
+        .page-bar { background: var(--navy); }
+        .page-bar .site-nav { padding: 1.1rem 2rem; }
 
-        .table-wrap { overflow-x:auto; margin-top:.5rem; }
-        table { width:100%; border-collapse:separate; border-spacing:0; background:white; border-radius:12px; overflow:hidden; }
-        thead th { background:#f8fafc; color:#475569; text-align:left; padding:.9rem .9rem; border-bottom:1px solid #e5e7eb; font-weight:600; font-size:.9rem; }
-        tbody td { padding:.9rem .9rem; border-bottom:1px solid #f1f5f9; }
-        tbody tr:hover { background:#f8fafc; }
+        .container { max-width: 1180px; margin: 0 auto; padding: 2rem; }
+        .card { background: #fff; border-radius: 14px; border: 1px solid var(--line-on-light); padding: 1.75rem; }
+        .title-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+        .title { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; color: var(--ink); }
+        .muted { color: var(--ink-soft); font-size: 0.92rem; }
 
-        .pagination { display:flex; gap:.5rem; align-items:center; justify-content:flex-end; margin-top:1rem; }
-        .page-btn { padding:.4rem .7rem; border:1px solid #e2e8f0; border-radius:8px; background:white; color:#111827; text-decoration:none; }
-        .page-btn.active { background:#667eea; color:white; border-color:#667eea; }
-        .page-btn.disabled { opacity:.5; pointer-events:none; }
+        .table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border-radius: 10px; overflow: hidden; }
+        thead th { background: var(--paper); color: var(--ink-soft); text-align: left; padding: 0.85rem; border-bottom: 1px solid var(--line-on-light); font-weight: 600; font-size: 0.82rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.04em; }
+        tbody td { padding: 0.85rem; border-bottom: 1px solid var(--paper); color: var(--ink); }
+        tbody tr:hover { background: var(--paper); }
 
-        /* Stats summary */
-        .stats-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem; }
-        .stat { background:white; border-radius:14px; box-shadow:0 8px 24px rgba(2,6,23,.08); padding:1rem 1.2rem; position:relative; overflow:hidden; border:1px solid rgba(226,232,240,.6); }
-        .stat-title { font-size:.9rem; color:#64748b; display:flex; align-items:center; gap:.5rem; }
-        .stat-value { font-size:1.6rem; font-weight:800; color:#0f172a; margin-top:.25rem; }
-        .chip { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:.9rem; background:linear-gradient(135deg,#667eea,#764ba2); }
-        .mini-chart { height:48px; background:linear-gradient(90deg,#eef2ff,#f5f3ff); border-radius:8px; padding:6px; display:flex; align-items:flex-end; gap:3px; }
-        .mini-bar { flex:1; background:linear-gradient(180deg,#667eea,#764ba2); border-radius:3px; min-height:3px; opacity:.85; transition:height .3s ease; }
+        .pagination { display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end; margin-top: 1.2rem; }
+        .page-btn { padding: 0.4rem 0.75rem; border: 1px solid var(--line-on-light); border-radius: 7px; background: #fff; color: var(--ink); text-decoration: none; font-size: 0.88rem; }
+        .page-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+        .page-btn.disabled { opacity: 0.4; pointer-events: none; }
 
-        /* Filters and actions */
-        .actions-row { display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
-        .btn-soft { background:#eef2ff; color:#4338ca; border:1px solid #c7d2fe; }
-        .btn-soft:hover { background:#e0e7ff; }
-        .btn-ghost { background:white; color:#0f172a; border:1px solid #e2e8f0; }
-        .btn-ghost:hover { background:#f8fafc; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+        .stat { background: var(--paper); border-radius: 10px; padding: 1rem 1.2rem; border: 1px solid var(--line-on-light); }
+        .stat-title { font-size: 0.82rem; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 0.04em; }
+        .stat-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.6rem; font-weight: 700; color: var(--ink); margin-top: 0.3rem; }
+        .mini-chart { height: 44px; background: var(--paper-2); border-radius: 8px; padding: 6px; display: flex; align-items: flex-end; gap: 3px; margin-top: 0.6rem; }
+        .mini-bar { flex: 1; background: var(--coral); border-radius: 2px; min-height: 3px; opacity: 0.85; transition: height 0.3s ease; }
 
-        /* Calendar  */
-        .cal-wrap { overflow-x:auto; }
-        .cal { width:100%; border-collapse:separate; border-spacing:8px; }
-        .cal th { text-align:center; font-size:.85rem; color:#64748b; font-weight:600; padding:.25rem 0; }
-        .cal-day { display:inline-flex; width:44px; height:44px; align-items:center; justify-content:center; border-radius:12px; font-weight:700; border:1px solid #e2e8f0; background:#f8fafc; color:#0f172a; box-shadow: 0 1px 2px rgba(2,6,23,.04); transition: transform .15s ease, box-shadow .2s ease; }
-        .cal-day:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(2,6,23,.10); }
-        .cal-start { background:linear-gradient(135deg,#fee2e2,#fecaca); color:#991b1b; border-color:#fecaca; }
-        .cal-logged { background:#e5e7eb; color:#111827; border-color:#d1d5db; }
-        .cal-today { outline: 2px solid #6366f1; outline-offset: 2px; }
-        .cal-legend { display:flex; gap:1rem; align-items:center; margin-top:.5rem; color:#64748b; font-size:.9rem; }
-        .legend-chip { display:inline-flex; width:14px; height:14px; border-radius:4px; border:1px solid #e2e8f0; background:#f8fafc; }
-        .legend-chip.start { background:#fecaca; border-color:#fecaca; }
-        .legend-chip.today { background:#eef2ff; border-color:#c7d2fe; box-shadow: 0 0 0 2px #6366f1 inset; }
-        .legend-chip.logged { background:#e5e7eb; border-color:#d1d5db; }
+        .actions-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .btn-soft { background: rgba(27, 122, 114, 0.1); color: var(--teal); border: 1px solid rgba(27, 122, 114, 0.3); }
+        .btn-soft:hover { background: rgba(27, 122, 114, 0.18); }
+        .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line-on-light); }
+        .btn-ghost:hover { background: var(--paper); }
+
+        .cal-wrap { overflow-x: auto; }
+        .cal { width: 100%; border-collapse: separate; border-spacing: 8px; }
+        .cal th { text-align: center; font-size: 0.82rem; color: var(--ink-soft); font-weight: 600; padding: 0.25rem 0; font-family: 'IBM Plex Mono', monospace; }
+        .cal-day { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 9px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; border: 1px solid var(--line-on-light); background: var(--paper); color: var(--ink); transition: transform 0.15s ease, box-shadow 0.2s ease; }
+        .cal-day:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(11,31,42,0.1); }
+        .cal-start { background: rgba(255, 90, 78, 0.12); color: var(--coral-dark); border-color: rgba(255, 90, 78, 0.35); }
+        .cal-logged { background: rgba(27, 122, 114, 0.12); color: var(--teal); border-color: rgba(27, 122, 114, 0.35); }
+        .cal-today { outline: 2px solid var(--navy); outline-offset: 2px; }
+        .cal-legend { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; color: var(--ink-soft); font-size: 0.85rem; }
+        .legend-chip { display: inline-flex; width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line-on-light); background: var(--paper); }
+        .legend-chip.start { background: rgba(255, 90, 78, 0.25); border-color: rgba(255, 90, 78, 0.4); }
+        .legend-chip.today { background: #fff; border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy) inset; }
+        .legend-chip.logged { background: rgba(27, 122, 114, 0.25); border-color: rgba(27, 122, 114, 0.4); }
     </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <div class="logo"><img src="{% static 'heart logo.png' %}" alt="Logo">Smart Health Companion</div>
+    <header class="page-bar">
+        <nav class="site-nav" style="max-width: 1180px; margin: 0 auto;">
+            <a class="site-logo" href="{% url 'dashboard' %}"><img src="{% static 'heart logo.png' %}" alt="Logo">Smart Health Companion</a>
             <div>
                 <a href="{% url 'dashboard' %}" class="btn btn-outline">Back to Dashboard</a>
             </div>
@@ -79,13 +75,13 @@
             <div class="title-row">
                 <div>
                     <div class="title">Tracking Calendar</div>
-                    <div class="muted">Start date is highlighted in red.</div>
+                    <div class="muted">Start date is highlighted in coral.</div>
                 </div>
             </div>
             <div class="cal-wrap">
                 <div style="min-width:360px;">
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem;">
-                        <div style="font-weight:800;">{{ calendar_month_name }} {{ calendar_year }}</div>
+                        <div style="font-weight:700; font-family:'IBM Plex Sans',sans-serif;">{{ calendar_month_name }} {{ calendar_year }}</div>
                         <div class="cal-legend">
                             <span><span class="legend-chip start"></span> Start</span>
                             <span><span class="legend-chip logged"></span> Logged</span>
@@ -110,7 +106,7 @@
                                 {% for d in week %}
                                 <td style="text-align:center; padding:.25rem;">
                                     {% if d.is_blank %}
-                                        <span style="display:inline-block; width:44px; height:44px;"></span>
+                                        <span style="display:inline-block; width:40px; height:40px;"></span>
                                     {% else %}
                                         <span class="cal-day {% if d.is_start %}cal-start{% endif %} {% if d.is_logged %}cal-logged{% endif %} {% if d.is_today %}cal-today{% endif %}">{{ d.num }}</span>
                                     {% endif %}
@@ -156,7 +152,6 @@
                     <div class="stat-title">Total Exercise (min)</div>
                     <div class="stat-value" id="totalExercise">—</div>
                 </div>
-
             </div>
 
             <div class="table-wrap">
@@ -209,23 +204,20 @@
     </main>
     <script>
     (function(){
-        // Parse table rows into data
         const rows = Array.from(document.querySelectorAll('tbody tr[data-date]'));
         const parseDate = (s) => {
             if (!s) return new Date('invalid');
-
             if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
                 const [y,m,d] = s.split('-').map(Number);
                 return new Date(y, m-1, d);
             }
-            // Fallback
             return new Date(s);
         };
 
         function withinThisWeek(d){
             const now = new Date();
             const day = now.getDay();
-            const diffToSunday = now.getDate() - day; // start of week (Sun)
+            const diffToSunday = now.getDate() - day;
             const start = new Date(now); start.setHours(0,0,0,0); start.setDate(diffToSunday);
             const end = new Date(start); end.setDate(start.getDate()+7);
             return d >= start && d < end;
@@ -262,7 +254,6 @@
             document.getElementById('avgSleep').textContent = avgSlp.toFixed(1);
             document.getElementById('totalExercise').textContent = Math.round(sumEx).toLocaleString();
 
-            // Mini chart (last up to 14 entries on current page)
             const chart = document.getElementById('miniChart');
             chart.innerHTML = '';
             const series = calSeries.slice(-14);
@@ -270,7 +261,7 @@
             series.forEach(v=>{
                 const bar = document.createElement('div');
                 bar.className = 'mini-bar';
-                const h = Math.max(6, Math.round((v/max)*44));
+                const h = Math.max(6, Math.round((v/max)*38));
                 bar.style.height = h+'px';
                 chart.appendChild(bar);
             });
@@ -289,21 +280,15 @@
             updateStats(filtered.length?filtered:rows);
         }
 
-        // Initial stats for current page
         updateStats(rows);
 
-        // Wire buttons
         const btnW = document.getElementById('filterWeek');
         const btnM = document.getElementById('filterMonth');
         const btnC = document.getElementById('filterClear');
         if (btnW) btnW.addEventListener('click', ()=>applyFilter('week'));
         if (btnM) btnM.addEventListener('click', ()=>applyFilter('month'));
         if (btnC) btnC.addEventListener('click', ()=>applyFilter('all'));
-
-        // no export
     })();
     </script>
 </body>
 </html>
-
-

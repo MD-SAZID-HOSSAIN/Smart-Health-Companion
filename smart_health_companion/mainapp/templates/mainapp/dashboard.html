@@ -5,54 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Smart Health Companion</title>
     {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/site.css' %}" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--ink);
+            background: var(--paper-2);
             min-height: 100vh;
+            padding-top: 76px;
         }
 
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem 0;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo img {
-            width: 45px;
-            height: auto;
-        }
+        h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; }
 
         .user-menu {
             display: flex;
@@ -63,66 +36,24 @@
         .user-avatar {
             min-width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 90, 78, 0.15);
+            border: 1px solid rgba(255, 90, 78, 0.35);
             border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9rem;
+            color: var(--coral);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: 'IBM Plex Mono', monospace;
             padding: 0 12px;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .btn:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 4px rgba(102,126,234,.18);
+            box-shadow: 0 0 0 4px rgba(255, 90, 78, 0.18);
         }
         .btn:active { transform: translateY(1px); }
-
-        .btn-sm {
-            padding: 0.4rem 0.9rem;
-            font-size: 0.9rem;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #e74c3c;
-            color: #e74c3c;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.12);
-        }
-
-        .btn-outline:hover {
-            background: #e74c3c;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(231, 76, 60, 0.28);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.28);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
 
         .main-content {
             max-width: 1200px;
@@ -131,65 +62,37 @@
         }
 
         .welcome-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--navy);
             color: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
+            padding: 2.75rem 2rem;
+            border-radius: 14px;
             margin-bottom: 2rem;
             position: relative;
             overflow: hidden;
+            border: 1px solid var(--line-on-dark);
         }
 
-        /* Subtle animated blobs + sheen */
-        .welcome-banner::before,
-        .welcome-banner::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(40px);
-            opacity: 0.25;
-            pointer-events: none;
-            mix-blend-mode: screen;
-        }
         .welcome-banner::before {
-            width: 220px;
-            height: 220px;
-            top: -60px;
-            left: -40px;
-            background: radial-gradient(circle at 30% 30%, #ffffff 0%, rgba(255,255,255,0) 60%);
-            animation: floatBlob 12s ease-in-out infinite;
-        }
-        .welcome-banner::after {
-            width: 260px;
-            height: 260px;
-            bottom: -80px;
-            right: -60px;
-            background: radial-gradient(circle at 70% 70%, #ffeaa7 0%, rgba(255,234,167,0) 65%);
-            animation: floatBlob 14s ease-in-out infinite reverse;
-        }
-        @keyframes floatBlob {
-            0%, 100% { transform: translate(0,0) scale(1); }
-            50% { transform: translate(10px, -10px) scale(1.05); }
-        }
-        .welcome-content h1 {
-            position: relative;
-            overflow: hidden;
-        }
-        .welcome-content h1::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: -150px;
-            width: 120px;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-20deg);
-            animation: sheen 3.5s ease-in-out infinite;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--line-on-dark) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-on-dark) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: radial-gradient(ellipse 70% 100% at 50% 0%, black 30%, transparent 90%);
+            opacity: 0.5;
+            pointer-events: none;
         }
-        @keyframes sheen {
-            0% { left: -150px; }
-            60% { left: 110%; }
-            100% { left: 110%; }
+
+        .particle-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            display: block;
         }
 
         .welcome-content {
@@ -199,60 +102,32 @@
         }
 
         .welcome-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 2.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
         }
 
-        .welcome-content .highlight { background: none; -webkit-text-fill-color: inherit; color: inherit; }
+        .welcome-content .highlight { color: var(--coral); font-style: italic; }
 
         .welcome-content p {
-            font-size: 1.1rem;
-            opacity: 1;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1.05rem;
+            color: rgba(244, 247, 245, 0.75);
             margin-bottom: 1.5rem;
         }
 
-        /* Animated gradient text utility */
-        .animated-gradient-text {
-            background: linear-gradient(135deg, #ffeaa7, #ffffff, #fdcb6e);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: textGradientMove 6s ease-in-out infinite;
-        }
-        @keyframes textGradientMove {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        /* Animated gradient text utility */
-        .animated-gradient-text {
-            background: linear-gradient(135deg, #ffeaa7, #ffffff, #fdcb6e);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: textGradientMove 6s ease-in-out infinite;
-        }
-        @keyframes textGradientMove {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
         .profile-alert {
-            background: rgba(255, 243, 205, 0.9);
-            backdrop-filter: blur(20px);
-            border: 1px solid #ffeaa7;
-            border-radius: 15px;
-            padding: 2rem;
+            background: rgba(255, 90, 78, 0.06);
+            border: 1px solid rgba(255, 90, 78, 0.3);
+            border-radius: 12px;
+            padding: 1.75rem;
             margin-bottom: 2rem;
             text-align: center;
             position: relative;
         }
 
         .profile-alert h3 {
-            color: #856404;
+            color: var(--coral-dark);
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
@@ -261,7 +136,7 @@
         }
 
         .profile-alert p {
-            color: #856404;
+            color: var(--ink-soft);
             margin-bottom: 1.5rem;
         }
 
@@ -293,8 +168,8 @@
             will-change: transform;
             transition: transform .15s ease, box-shadow .2s ease;
         }
-        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(102,126,234,.35); }
-        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(102,126,234,.35); }
+        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(255, 90, 78,.35); }
+        .stat-card:hover .stat-value { text-shadow: 0 4px 18px rgba(255, 90, 78,.35); }
 
         .stat-card::before {
             content: '';
@@ -303,7 +178,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--coral);
         }
 
         .stat-card.bmi::before { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
@@ -322,7 +197,7 @@
 
         .stat-card h4 {
             font-size: 1rem;
-            color: #64748b;
+            color: var(--ink-soft);
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
@@ -330,13 +205,13 @@
         .stat-value {
             font-size: 2rem;
             font-weight: bold;
-            color: #1e293b;
+            color: var(--ink);
             margin-bottom: 0.5rem;
         }
 
         .stat-label {
             font-size: 0.9rem;
-            color: #64748b;
+            color: var(--ink-soft);
         }
 
         .actions-section {
@@ -350,7 +225,7 @@
 
         .actions-section h3 {
             font-size: 1.5rem;
-            color: #1e293b;
+            color: var(--ink);
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
@@ -390,7 +265,7 @@
         }
 
         .tip-card h4 {
-            color: #1e293b;
+            color: var(--ink);
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
@@ -398,7 +273,7 @@
         }
 
         .tip-card p {
-            color: #64748b;
+            color: var(--ink-soft);
             line-height: 1.6;
         }
 
@@ -411,14 +286,14 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(#667eea 0deg 270deg, #e2e8f0 270deg 360deg);
+            background: conic-gradient(var(--coral) 0deg 270deg, #e2e8f0 270deg 360deg);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
         }
         .progress-circle::before { content: ''; width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; }
-        .progress-text { position: absolute; font-size: 0.8rem; font-weight: bold; color: #667eea; }
+        .progress-text { position: absolute; font-size: 0.8rem; font-weight: bold; color: var(--coral); }
 
         /* Weight Loss Plan Styles */
         .weight-loss-plan-section {
@@ -430,7 +305,7 @@
         }
 
         .plan-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--navy);
             color: white;
             padding: 1.5rem 2rem;
             display: flex;
@@ -453,12 +328,12 @@
         .loading-spinner {
             text-align: center;
             padding: 2rem;
-            color: #667eea;
+            color: var(--coral);
         }
 
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border-top: 4px solid var(--coral);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -491,14 +366,14 @@
         }
         .section-title {
             font-size: 1.25rem;
-            color: #0f172a;
+            color: var(--ink);
             font-weight: 700;
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: .5rem;
         }
-        .muted { color: #64748b; font-size: .95rem; }
+        .muted { color: var(--ink-soft); font-size: .95rem; }
         .form-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(160px, 1fr));
@@ -521,13 +396,13 @@
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             background: #ffffff;
-            color: #0f172a;
+            color: var(--ink);
             outline: none;
             transition: box-shadow .2s ease, border-color .2s ease;
         }
         .control input:focus, .control select:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102,126,234,.15);
+            border-color: var(--coral);
+            box-shadow: 0 0 0 4px rgba(255, 90, 78,.15);
         }
         .actions { margin-top: .5rem; }
         .btn-submit { padding: .8rem 1.2rem; }
@@ -554,13 +429,13 @@
         .table tbody td {
             padding: .9rem .9rem;
             border-bottom: 1px solid #f1f5f9;
-            color: #0f172a;
+            color: var(--ink);
         }
         .table tbody tr:hover { background: #f8fafc; }
         
         /* Health Insights */
         .insight-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--coral);
             color: white;
             padding: 1.5rem;
             border-radius: 15px;
@@ -601,7 +476,7 @@
         .form-icon {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--coral);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -644,7 +519,7 @@
         .widget-title {
             font-size: 1.2rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--ink);
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -653,7 +528,7 @@
         .widget-icon {
             width: 24px;
             height: 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--coral);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -693,7 +568,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(var(--progress-color, #667eea) 0deg var(--progress-angle, 0deg), #e2e8f0 var(--progress-angle, 0deg) 360deg);
+            background: conic-gradient(var(--progress-color, var(--coral)) 0deg var(--progress-angle, 0deg), #e2e8f0 var(--progress-angle, 0deg) 360deg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -715,19 +590,19 @@
             position: absolute;
             font-size: 0.9rem;
             font-weight: bold;
-            color: var(--progress-color, #667eea);
+            color: var(--progress-color, var(--coral));
             z-index: 2;
         }
 
         .progress-info h4 {
             margin: 0 0 0.5rem 0;
-            color: #1e293b;
+            color: var(--ink);
             font-size: 1.1rem;
         }
 
         .progress-info p {
             margin: 0;
-            color: #64748b;
+            color: var(--ink-soft);
             font-size: 0.9rem;
         }
 
@@ -760,15 +635,15 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 90, 78, 0.1), transparent);
             transition: left 0.5s ease;
         }
 
         .quick-action:hover::before { left: 100%; }
         .quick-action:hover {
-            border-color: #667eea;
+            border-color: var(--coral);
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 15px 35px rgba(255, 90, 78, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
             text-decoration: none;
             color: inherit;
         }
@@ -776,7 +651,7 @@
         .quick-action-icon {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--coral);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -786,15 +661,21 @@
             font-size: 1.5rem;
         }
 
-        .quick-action-title { font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 0.5rem; }
-        .quick-action-desc { font-size: 0.85rem; color: #64748b; }
+        .quick-action-title { font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+        .quick-action-desc { font-size: 0.85rem; color: var(--ink-soft); }
     </style>
     
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <div class="logo"><img src="{% static 'heart logo.png' %}" alt="Smart Health Companion Logo">Smart Health Companion</div>
+    <header class="site-header">
+        <nav class="site-nav">
+            <a class="site-logo" href="{% url 'dashboard' %}"><img src="{% static 'heart logo.png' %}" alt="Smart Health Companion Logo">Smart Health Companion</a>
+            <ul class="site-nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'logs' %}">Logs</a></li>
+                <li><a href="{% url 'tips_list' %}">Tips & Tricks</a></li>
+                <li><a href="{% url 'doctor' %}">Doctors</a></li>
+            </ul>
             <div class="user-menu">
                 <div class="user-avatar">
                     {{ request.user.first_name|default:request.user.username }}
@@ -807,6 +688,7 @@
 
     <main class="main-content">
         <div class="welcome-banner reveal">
+            <canvas class="particle-canvas" id="welcomeParticles" aria-hidden="true"></canvas>
             <div class="welcome-content">
                 <h1 class="animated-gradient-text">Welcome back, <span class="highlight">{{ request.user.get_full_name|default:request.user.username }}!</span></h1>
                 <p id="subtitleType">Track your progress and stay on top of your health goals</p>
@@ -1061,7 +943,7 @@
                     </div>
                 </div>
                 <!-- Mini Chart -->
-                <div class="mini-chart" style="height: 60px; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 8px; position: relative; overflow: hidden; margin: 1rem 0;">
+                <div class="mini-chart" style="height: 60px; background: var(--coral); border-radius: 8px; position: relative; overflow: hidden; margin: 1rem 0;">
                     <div class="chart-bars" style="display: flex; align-items: end; height: 100%; padding: 8px; gap: 2px;">
                         <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 20px;"></div>
                         <div class="chart-bar" style="background: rgba(255, 255, 255, 0.8); border-radius: 2px; flex: 1; min-height: 4px; animation: barGrow 1s ease-out; --bar-height: 35px;"></div>
@@ -1183,7 +1065,7 @@
                     </span>
                     Food Calorie Scanner
                 </span>
-                <span style="font-size: .8rem; color: #64748b; font-weight: 400;">AI-Powered</span>
+                <span style="font-size: .8rem; color: var(--ink-soft); font-weight: 400;">AI-Powered</span>
             </div>
             <p class="muted" style="margin-bottom:1.2rem;">Upload a food photo and enter the weight to estimate calories instantly.</p>
 
@@ -1212,7 +1094,7 @@
                         <div class="field">
                             <label class="label" for="foodWeight">Weight (grams)</label>
                             <div class="control">
-                                <input type="number" id="foodWeight" name="weight_grams" min="1" step="1" placeholder="e.g. 250" required style="width:100%; padding:.7rem .85rem; border:1px solid #e2e8f0; border-radius:10px; background:#fff; color:#0f172a; outline:none; transition: box-shadow .2s ease, border-color .2s ease; font-size: 1rem;">
+                                <input type="number" id="foodWeight" name="weight_grams" min="1" step="1" placeholder="e.g. 250" required style="width:100%; padding:.7rem .85rem; border:1px solid #e2e8f0; border-radius:10px; background:#fff; color:var(--ink); outline:none; transition: box-shadow .2s ease, border-color .2s ease; font-size: 1rem;">
                             </div>
                         </div>
                         <button type="submit" id="foodScanBtn" class="btn btn-primary btn-submit" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 6px 16px rgba(245,158,11,.28);" disabled>
@@ -1229,7 +1111,7 @@
             <!-- Loading spinner -->
             <div id="foodScannerLoading" style="display: none; text-align: center; padding: 2rem;">
                 <div class="spinner" style="border-top-color: #f59e0b;"></div>
-                <p style="color: #64748b;">Analyzing your food photo...</p>
+                <p style="color: var(--ink-soft);">Analyzing your food photo...</p>
             </div>
 
             <!-- Result area -->
@@ -1242,12 +1124,12 @@
                                 <span style="font-size: 1.5rem;">🍽️</span>
                                 <div>
                                     <div style="font-size: .8rem; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;">Detected Dish</div>
-                                    <div id="foodResultName" style="font-size: 1.3rem; font-weight: 700; color: #1e293b;"></div>
+                                    <div id="foodResultName" style="font-size: 1.3rem; font-weight: 700; color: var(--ink);"></div>
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: .8rem;">
                                 <div id="foodResultConfBadge" style="display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 600;"></div>
-                                <div id="foodResultCalPer100" style="display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 600; background: rgba(102,126,234,.1); color: #4338ca;"></div>
+                                <div id="foodResultCalPer100" style="display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .8rem; border-radius: 999px; font-size: .85rem; font-weight: 600; background: rgba(27, 122, 114,.1); color: #1B7A72;"></div>
                             </div>
                         </div>
 
@@ -1255,7 +1137,7 @@
                         <div id="foodResultCalories" style="text-align: center; min-width: 140px;">
                             <div style="font-size: .8rem; color: #92400e; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .3rem;">Estimated Calories</div>
                             <div id="foodResultCalValue" style="font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1;"></div>
-                            <div id="foodResultCalLabel" style="font-size: .85rem; color: #64748b;">kcal</div>
+                            <div id="foodResultCalLabel" style="font-size: .85rem; color: var(--ink-soft);">kcal</div>
                         </div>
                     </div>
 
@@ -1265,9 +1147,9 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                             Low confidence — please verify the dish
                         </p>
-                        <p style="color: #64748b; font-size: .9rem; margin-bottom: .8rem;">The model is not confident. Select the correct dish below:</p>
+                        <p style="color: var(--ink-soft); font-size: .9rem; margin-bottom: .8rem;">The model is not confident. Select the correct dish below:</p>
                         <div class="control">
-                            <select id="foodManualPicker" style="width: 100%; padding: .7rem .85rem; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; color: #0f172a; font-size: .95rem; outline: none;"></select>
+                            <select id="foodManualPicker" style="width: 100%; padding: .7rem .85rem; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; color: var(--ink); font-size: .95rem; outline: none;"></select>
                         </div>
                         <button id="foodRecalcBtn" class="btn btn-primary btn-sm" style="margin-top: .8rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">Calculate Calories</button>
                     </div>
@@ -1282,7 +1164,7 @@
                             </svg>
                             Save to Today's Log
                         </button>
-                        <span id="foodSaveStatus" style="font-size: .9rem; color: #64748b;"></span>
+                        <span id="foodSaveStatus" style="font-size: .9rem; color: var(--ink-soft);"></span>
                     </div>
                 </div>
             </div>
@@ -1531,6 +1413,134 @@
     </main>
     <script>
     (function(){
+        // Particle network — welcome banner signature moment
+        const canvas = document.getElementById('welcomeParticles');
+        if (!canvas) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduced)').matches) return;
+
+        const banner = canvas.closest('.welcome-banner');
+        const ctx = canvas.getContext('2d');
+        const TEAL = '27,122,114';
+        const CORAL = '255,90,78';
+        const LINK_DIST = 110;
+
+        let width = 0, height = 0, dpr = 1;
+        let particles = [];
+        let rafId = null;
+        let running = false;
+
+        function makeParticles() {
+            const count = Math.min(42, Math.max(16, Math.round((width * height) / 9500)));
+            particles = Array.from({ length: count }, () => {
+                const isPulse = Math.random() < 0.2;
+                return {
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    r: isPulse ? 1.6 + Math.random() * 1.0 : 1.2 + Math.random() * 1.0,
+                    isPulse,
+                    phase: Math.random() * Math.PI * 2
+                };
+            });
+        }
+
+        function resize() {
+            if (!banner) return;
+            const rect = banner.getBoundingClientRect();
+            width = Math.max(1, Math.round(rect.width));
+            height = Math.max(1, Math.round(rect.height));
+            dpr = Math.min(2, window.devicePixelRatio || 1);
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            makeParticles();
+        }
+
+        function step(t) {
+            if (!running) return;
+            ctx.clearRect(0, 0, width, height);
+
+            for (const p of particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x <= 0 || p.x >= width) p.vx *= -1;
+                if (p.y <= 0 || p.y >= height) p.vy *= -1;
+                p.x = Math.min(Math.max(p.x, 0), width);
+                p.y = Math.min(Math.max(p.y, 0), height);
+            }
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i], b = particles[j];
+                    const dx = a.x - b.x, dy = a.y - b.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < LINK_DIST) {
+                        ctx.strokeStyle = `rgba(${TEAL},${0.18 * (1 - dist / LINK_DIST)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            for (const p of particles) {
+                if (p.isPulse) {
+                    const breathe = 0.6 + 0.4 * Math.sin(t / 900 + p.phase);
+                    ctx.fillStyle = `rgba(${CORAL},${breathe})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r * (0.85 + 0.3 * breathe), 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = `rgba(${TEAL},0.6)`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            rafId = requestAnimationFrame(step);
+        }
+
+        function start() {
+            if (running) return;
+            running = true;
+            rafId = requestAnimationFrame(step);
+        }
+
+        function stop() {
+            running = false;
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+
+        resize();
+        start();
+
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) stop(); else start();
+        });
+
+        if (banner && 'IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) start(); else stop();
+                });
+            }, { threshold: 0.01 });
+            io.observe(banner);
+        }
+    })();
+    </script>
+    <script>
+    (function(){
         // 3D tilt effect for cards
         const tiltElements = document.querySelectorAll('.tiltable');
         tiltElements.forEach(el => {
@@ -1560,6 +1570,7 @@
         };
         window.addEventListener('scroll', reveal);
         window.addEventListener('load', reveal);
+        reveal();
 
         // Typewriter effect for subtitle
         const subtitle = document.getElementById('subtitleType');
